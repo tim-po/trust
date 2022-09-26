@@ -1,0 +1,27 @@
+.selected-file-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.file-select > .select-button {
+    overflow: hidden;
+    width: 190px;
+    height: 103px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 12px;
+    color: #9F9F9F;
+    background: #F4F4F5;
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+}
+
+.file-select > input[type="file"] {
+    display: none;
+}

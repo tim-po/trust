@@ -1,0 +1,77 @@
+$base-color: rgba(204, 204, 204, 0.4);
+$shine-color: rgba(255, 255, 255, 0.45);
+
+.skeleton {
+  color: rgba(255, 255, 255, 0.1) !important;
+  background-image: linear-gradient(-45deg, $base-color 0, $base-color 45%, $shine-color 50%, $base-color 55%, $base-color 100%) !important;
+  content: "" !important;
+  animation: shine-lines 2s infinite;
+  background-size: 400% 400% !important;
+  backdrop-filter: blur(30px);
+  z-index: 1000;
+  pointer-events: none;
+
+  &::placeholder {
+    opacity: 0 !important;
+  }
+
+  &::before {
+    opacity: 0;
+  }
+
+  &::after {
+    opacity: 0;
+  }
+
+  div, span, img, video, p, source {
+    opacity: 0 !important;
+  }
+}
+
+@keyframes shine-lines {
+  from {
+    background-position: right;
+  }
+  50% {
+    background-position: left;
+  }
+  to {
+    background-position: right;
+  }
+}
+
+.input-container.style-override {
+
+  .checkmark {
+    //background: no-repeat url("/images/checkMark.svg") 0% 0px;
+    //padding-left: 20px;
+  }
+
+  &.not-valid {
+  }
+
+  &::placeholder {
+  }
+
+  &:focus {
+  }
+
+  .simple-input-form {
+  }
+
+  .input-container {
+  }
+
+  .simple-input-label {
+  }
+
+  .validation-error-tooltip {
+  }
+
+  .default-value-button {
+  }
+
+  .default-value-button:hover {
+  }
+}
+
