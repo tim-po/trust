@@ -7,8 +7,8 @@ import React from 'react';
 export default (props) => {
 
   let {
-    width = '20',
-    height = '20',
+    width = '25',
+    height = '25',
     animationSpeed = '0.3',
     color = '#000',
     animate,

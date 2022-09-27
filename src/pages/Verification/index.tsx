@@ -19,7 +19,7 @@ import ForceValidateContext from "Standard/ForceValidateContext";
 import SubHeader from "../../components/SubHeader";
 import Disk from '../../icons/Disk';
 import ButtonV2 from "../../Standard/components/ButtonV2";
-
+import GradientCircles from "Standard/decorations/GradientCircles";
 type VerificationPropType = {}
 
 const VerificationDefaultProps = {};
@@ -58,32 +58,6 @@ const PaddingWrapper = styled.div`
   @media screen and (max-width: 900px) {
     padding: 25px 25px;
   }
-`
-
-const BlueGreenGradientCircle = styled.div`
-  position: absolute;
-  width: 948px;
-  height: 948px;
-  background: linear-gradient(228.62deg, #5790FF 12.13%, #A5FDC3 94.47%);
-  opacity: 0.6;
-  left: -239px;
-  top: 395px;
-  z-index: 0;
-  border-radius: 50%;
-  filter: blur(162px);
-`
-
-const PurpleBlueGradientCircle = styled.div`
-  position: absolute;
-  width: 892px;
-  height: 892px;
-  right: -239px;
-  top: 1000px;
-  background: linear-gradient(133.46deg, #5790FF 14.79%, rgba(165, 36, 226, 0) 103.42%);
-  opacity: 0.6;
-  z-index: 0;
-  border-radius: 50%;
-  filter: blur(162px);
 `
 
 const FormWrapper = styled.div`
@@ -365,6 +339,7 @@ const Verification = (props: VerificationPropType) => {
             }
           </PaddingWrapper>
         </FormWrapper>
+        <GradientCircles/>
       </VerificationPageContainer>
     </ForceValidateContext.Provider>
   );

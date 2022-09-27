@@ -7,4 +7,24 @@ export default {
     en: "Wallet address",
     ja: "ウォレットアドレス"
   },
+  title: {
+    en: "Payment Method",
+    ja: "支払方法"
+  },
+  verified: {
+    en: "Verified",
+    ja: "検証済み"
+  },
+  unverified: {
+    en: "Unverified",
+    ja: "未確認"
+  },
+  currentlyConnected: {
+    en: "Currently connected",
+    ja: "現在接続中"
+  },
+  addWalletButton: {
+    en: "Add",
+    ja: "追加"
+  }
 }

@@ -6,7 +6,7 @@ import './index.css'
 import styled from "styled-components";
 import Text from 'components/Text';
 import FAQButtonIcon from 'icons/FAQButton'
-import {AlignCenterRow} from 'styles/GlobalStyledComponents'
+import {AlignCenterRow} from 'Standard/styles/GlobalStyledComponents'
 
 type FAQTilePropType = {}
 

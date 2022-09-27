@@ -5,12 +5,13 @@ import {localized} from "Standard/utils/localized";
 import styled from 'styled-components';
 import Text from 'components/Text'
 import VerifiedWalletIcon from 'icons/VerifiedWallet';
-import {AlignCenterRow, JustifyStartColumn, SpaceBetweenRow} from 'styles/GlobalStyledComponents'
+import {AlignCenterRow, JustifyStartColumn, SpaceBetweenRow} from 'Standard/styles/GlobalStyledComponents'
 import {useWeb3React} from "@web3-react/core";
 import useValidatedState, {validationFuncs} from "Standard/hooks/useValidatedState";
 import SimpleLabelContainer from "Standard/components/SimpleLabelContainer";
 import SimpleInput from "Standard/components/SimpleInput";
 import ButtonV2 from "Standard/components/ButtonV2";
+import GradientCircles from "Standard/decorations/GradientCircles";
 
 type PaymentMethodPropType = {}
 
@@ -26,6 +27,7 @@ const Container = styled.div`
 `
 
 const CardWrapper = styled(JustifyStartColumn)`
+  position: relative;
   min-width: 415px;
   width: max-content;
   min-height: 275px;
@@ -35,6 +37,7 @@ const CardWrapper = styled(JustifyStartColumn)`
   border-radius: 16px;
   padding: 32px;
   margin-top: 25px;
+  z-index: 10;
 `
 
 const UnverifiedWalletIcon = styled.div`
@@ -52,26 +55,26 @@ const PaymentMethod = (props: PaymentMethodPropType) => {
 
   return (
     <Container>
-      <Text fontWeight={600} fontSize={25}>Payment Method</Text>
+      <Text fontWeight={600} fontSize={25}>{localized(texts.title, locale)}</Text>
       <CardWrapper gap={30}>
         <SpaceBetweenRow>
           <JustifyStartColumn>
             <AlignCenterRow gap={6}>
               <VerifiedWalletIcon/>
-              <Text fontWeight={600} fontSize={20}>Verified</Text>
+              <Text fontWeight={600} fontSize={20}>{localized(texts.verified, locale)}</Text>
             </AlignCenterRow>
             <span>0x4673..411</span>
           </JustifyStartColumn>
           <JustifyStartColumn>
             <AlignCenterRow gap={6}>
               <UnverifiedWalletIcon/>
-              <Text fontWeight={600} fontSize={20}>Unverified</Text>
+              <Text fontWeight={600} fontSize={20}>{localized(texts.unverified, locale)}</Text>
             </AlignCenterRow>
             <span>0x4673..411</span>
           </JustifyStartColumn>
         </SpaceBetweenRow>
         <JustifyStartColumn>
-          <Text fontWeight={500} fontSize={20}>Currently connected</Text>
+          <Text fontWeight={500} fontSize={20}>{localized(texts.currentlyConnected, locale)}</Text>
           <Text fontWeight={400} fontSize={16}>{account}</Text>
         </JustifyStartColumn>
         <JustifyStartColumn>
@@ -89,9 +92,10 @@ const PaymentMethod = (props: PaymentMethodPropType) => {
               }}
             />
           </SimpleLabelContainer>
-          <ButtonV2 isValid={transferAddressValid} onClick={() => {}}>Add</ButtonV2>
+          <ButtonV2 isValid={transferAddressValid} onClick={() => {}}>{localized(texts.addWalletButton, locale)}</ButtonV2>
         </JustifyStartColumn>
       </CardWrapper>
+      <GradientCircles />
     </Container>
   )
 };

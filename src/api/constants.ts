@@ -1,1 +1,1 @@
-export const API_URL = 'https://mmpro-kyc-backend.herokuapp.com';
+export const API_URL = 'http://134.209.181.150:7002';

@@ -1,3 +1,5 @@
+import React from "react";
+
 export type Country = {
     code: string,
     name: string
@@ -48,4 +50,19 @@ export type AllFieldsDict = {
     isValid: boolean,
     onChange: (newState: string) => void
   }
+}
+
+export type NavItems = React.ReactElement
+
+export enum ConnectorButtonsEnum {
+  ACCOUNT = 'Account',
+  PERSONAL_DATA = 'Personal data',
+  SECURITY_SETTINGS = 'Security settings',
+  PAYMENT_INFORMATION = 'Payment information',
+  LOGOUT = 'Logout'
+}
+
+export enum NavItemsEnum {
+  INVEST = 'Invest',
+  MANAGE = 'Manage'
 }

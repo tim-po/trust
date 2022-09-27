@@ -1,15 +1,21 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {useHistory} from "react-router-dom";
+import texts from './localization'
+import {localized} from 'Standard/utils/localized';
+import LocaleContext from 'Standard/LocaleContext'
+import {ConnectorButtonsEnum} from "../../types";
 
 type ConnectorButtonProps = {
-  text: string;
+  text: ConnectorButtonsEnum;
   url?: string | undefined;
   icon: React.ReactElement;
+  onClick?: () => void;
 }
 
 const ConnectorButton = (props: ConnectorButtonProps) => {
-  const {text, url, icon} = props
+  const {text, url, icon, onClick} = props
   const history = useHistory()
+  const {locale} = useContext(LocaleContext)
 
   const historyPush = () => {
     if (url) history.push(url)
@@ -18,11 +24,14 @@ const ConnectorButton = (props: ConnectorButtonProps) => {
   return (
     <button
       className={`connection-button`}
-      onClick={historyPush}
+      onClick={() => {
+        onClick !== undefined && onClick()
+        historyPush()
+      }}
     >
       {icon}
       <div style={{marginRight: 12}}/>
-      {text}
+      {localized(texts[text], locale)}
     </button>
   )
 }

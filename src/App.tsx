@@ -1,36 +1,38 @@
-import React, {useContext} from "react";
+import React from "react";
 import StandardAppContainer from "Standard/StandardAppContainer";
 import AppRouter from "router/AppRouter";
-import Notification from 'components/HeaderButtons/Notification'
-import FAQ from 'components/HeaderButtons/FAQ'
-import Email from 'components/HeaderButtons/Email'
-import {useCookies} from "react-cookie";
+import Notification from 'components/Header/Buttons/Notification'
+import FAQ from 'components/Header/Buttons/FAQ'
+import Email from 'components/Header/Email'
 import ConnectorButton from "components/ConnectorButtonExample";
-import texts from 'components/ConnectorButtonExample/localization';
-import {localized} from 'Standard/utils/localized';
-import LocaleContext from 'Standard/LocaleContext';
 import AccountIcon from 'icons/Account';
 import PaymentIcon from 'icons/PaymentMethod';
 import SecurityIcon from 'icons/SecuritySettings';
 import PersonalIcon from 'icons/PersonalData';
 import LogoutIcon from 'icons/Logout';
-import {HeaderButton} from "Standard/components/WalletConnector";
+import {HeaderButton} from "Standard/types";
 import {RouteName} from "router";
+import {ConnectorButtonsEnum, NavItems, NavItemsEnum} from "types";
+import NavItem from "components/Header/Navigation";
 
 export const App = () => {
-  const {locale} = useContext(LocaleContext)
-  const [cookies] = useCookies(["auth"])
 
   const buttons: HeaderButton[] = [
-    <ConnectorButton text={localized(texts.account, locale)} url={RouteName.ACCOUNT} icon={<AccountIcon />} />,
-    <ConnectorButton text={localized(texts.personalData, locale)} url={RouteName.VERIFICATION} icon={<PersonalIcon />} />,
-    <ConnectorButton text={localized(texts.securitySettings, locale)} url={RouteName.SECURITY} icon={<SecurityIcon />} />,
-    <ConnectorButton text={localized(texts.paymentInformation, locale)} url={RouteName.PAYMENT_METHOD} icon={<PaymentIcon />} />,
-    <ConnectorButton text={localized(texts.logout, locale)} icon={<LogoutIcon />} />,
+    <ConnectorButton text={ConnectorButtonsEnum.ACCOUNT} url={RouteName.ACCOUNT} icon={<AccountIcon />} />,
+    <ConnectorButton text={ConnectorButtonsEnum.PERSONAL_DATA} url={RouteName.VERIFICATION} icon={<PersonalIcon />} />,
+    <ConnectorButton text={ConnectorButtonsEnum.SECURITY_SETTINGS} url={RouteName.SECURITY} icon={<SecurityIcon />} />,
+    <ConnectorButton text={ConnectorButtonsEnum.PAYMENT_INFORMATION} url={RouteName.PAYMENT_METHOD} icon={<PaymentIcon />} />,
+    <ConnectorButton text={ConnectorButtonsEnum.LOGOUT} icon={<LogoutIcon />} />,
+  ]
+
+  const navItems: NavItems[] = [
+    <NavItem title={NavItemsEnum.INVEST} route={RouteName.INVEST} />,
+    <NavItem title={NavItemsEnum.MANAGE} route={RouteName.MANAGE} />,
   ]
 
   return (
     <StandardAppContainer
+      headerNavigation={navItems}
       connectorButtons={buttons}
       logoHref={'/'}
       locales={['en', 'ja']}

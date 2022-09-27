@@ -3,9 +3,10 @@ import texts from './localization'
 import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
 import styled from "styled-components";
-import {AlignCenterRow, JustifyStartColumn, SpaceBetweenRow, ButtonV3} from 'styles/GlobalStyledComponents'
+import {JustifyStartColumn, ButtonV3} from 'Standard/styles/GlobalStyledComponents'
 import Text from 'components/Text'
 import FAQTile from "components/FAQTile";
+import GradientCircles from "Standard/decorations/GradientCircles";
 
 type FAQPropType = {}
 
@@ -27,16 +28,17 @@ const FAQ = (props: FAQPropType) => {
     <Container>
       <JustifyStartColumn>
         <JustifyStartColumn gap={14}>
-          <Text fontWeight={600} fontSize={45} color={'#33CC66'}>Contact Us</Text>
-          <Text fontWeight={500} fontSize={20}>If you have any issues or questions please contact us.</Text>
-          <Text fontWeight={400} fontSize={16}>You will get a reply within 10 working days</Text>
-          <ButtonV3 buttonStyle='green'>Send us an email</ButtonV3>
+          <Text fontWeight={600} fontSize={45} color={'#33CC66'}>{localized(texts.title, locale)}</Text>
+          <Text fontWeight={500} fontSize={20}>{localized(texts.anyQuestion, locale)}</Text>
+          <Text fontWeight={400} fontSize={16}>{localized(texts.replayTime, locale)}</Text>
+          <ButtonV3 buttonStyle='green'>{localized(texts.sendEmailButton, locale)}</ButtonV3>
         </JustifyStartColumn>
         <div className='mt-10'/>
-        <Text fontWeight={600} fontSize={20}>Frequently asked questions</Text>
+        <Text fontWeight={600} fontSize={20}>{localized(texts.askedQuestions, locale)}</Text>
         <div style={{marginTop: '15px'}}/>
         <FAQTile/>
       </JustifyStartColumn>
+      <GradientCircles/>
     </Container>
   )
 };

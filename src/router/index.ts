@@ -5,6 +5,8 @@ import Verification from "pages/Verification";
 import PaymentMethod from "pages/PaymentMethod";
 import Account from "pages/Account";
 import FAQ from 'pages/FAQ';
+import Manage from "pages/Manage";
+import Invest from 'pages/Invest'
 
 export interface IRoute {
   path: string
@@ -19,8 +21,9 @@ export enum RouteName {
   PAYMENT_METHOD = '/payment',
   ACCOUNT = '/account',
   FAQ = '/FAQ',
-  SECURITY = 'security',
-
+  SECURITY = '/security',
+  INVEST = '/invest',
+  MANAGE = '/manage'
 }
 
 export const publicRoutes: IRoute[] = [
@@ -33,4 +36,6 @@ export const privateRoutes: IRoute[] = [
   {path: RouteName.PAYMENT_METHOD, component: PaymentMethod, exact: true},
   {path: RouteName.ACCOUNT, component: Account, exact: true},
   {path: RouteName.FAQ, component: FAQ, exact: true},
+  {path: RouteName.INVEST, component: Invest, exact: true},
+  {path: RouteName.MANAGE, component: Manage, exact: true},
 ]

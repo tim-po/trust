@@ -1,21 +1,21 @@
 export default {
-  account: {
+  "Account": {
     en: "Account",
     ja: "アカウント"
   },
-  personalData: {
+  "Personal data": {
     en: "Personal data",
     ja: "個人データ"
   },
-  securitySettings: {
+  "Security settings": {
     en: "Security settings",
     ja: "セキュリティ設定"
   },
-  paymentInformation: {
+  "Payment information": {
     en: "Payment information",
     ja: "支払情報"
   },
-  logout: {
+  "Logout": {
     en: "Logout",
     ja: "ログアウト"
   }
