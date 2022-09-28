@@ -3,10 +3,11 @@ import texts from './localization'
 import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
 import styled from "styled-components";
-import {JustifyStartColumn, ButtonV3} from 'Standard/styles/GlobalStyledComponents'
+import {JustifyStartColumn} from 'Standard/styles/GlobalStyledComponents'
 import Text from 'components/Text'
 import FAQTile from "components/FAQTile";
 import GradientCircles from "Standard/decorations/GradientCircles";
+import TrustButton from "Standard/components/TrustButton";
 
 type FAQPropType = {}
 
@@ -19,6 +20,11 @@ const Container = styled.div`
   flex-direction: column;
   padding: 36px;
   width: 100%;
+  z-index: 2;
+`
+
+const ZIndexWrapper = styled.div`
+  z-index: 1000;
 `
 
 const FAQ = (props: FAQPropType) => {
@@ -26,18 +32,20 @@ const FAQ = (props: FAQPropType) => {
 
   return (
     <Container>
-      <JustifyStartColumn>
-        <JustifyStartColumn gap={14}>
-          <Text fontWeight={600} fontSize={45} color={'#33CC66'}>{localized(texts.title, locale)}</Text>
-          <Text fontWeight={500} fontSize={20}>{localized(texts.anyQuestion, locale)}</Text>
-          <Text fontWeight={400} fontSize={16}>{localized(texts.replayTime, locale)}</Text>
-          <ButtonV3 buttonStyle='green'>{localized(texts.sendEmailButton, locale)}</ButtonV3>
+      <ZIndexWrapper>
+        <JustifyStartColumn>
+          <JustifyStartColumn gap={14}>
+            <Text fontWeight={600} fontSize={45} color={'#33CC66'}>{localized(texts.title, locale)}</Text>
+            <Text fontWeight={500} fontSize={20}>{localized(texts.anyQuestion, locale)}</Text>
+            <Text fontWeight={400} fontSize={16}>{localized(texts.replayTime, locale)}</Text>
+            <TrustButton style='green' rippleColor={'rgba(255, 255, 255, 0.2)'}>{localized(texts.sendEmailButton, locale)}</TrustButton>
+          </JustifyStartColumn>
+          <div className='mt-10'/>
+          <Text fontWeight={600} fontSize={20}>{localized(texts.askedQuestions, locale)}</Text>
+          <div style={{marginTop: '15px'}}/>
+          <FAQTile/>
         </JustifyStartColumn>
-        <div className='mt-10'/>
-        <Text fontWeight={600} fontSize={20}>{localized(texts.askedQuestions, locale)}</Text>
-        <div style={{marginTop: '15px'}}/>
-        <FAQTile/>
-      </JustifyStartColumn>
+      </ZIndexWrapper>
       <GradientCircles/>
     </Container>
   )

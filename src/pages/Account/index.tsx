@@ -4,8 +4,9 @@ import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
 import styled from "styled-components";
 import Text from "components/Text";
-import {JustifyStartColumn, SpaceBetweenRow, Row, ButtonV3} from "Standard/styles/GlobalStyledComponents";
+import {JustifyStartColumn, SpaceBetweenRow, Row} from "Standard/styles/GlobalStyledComponents";
 import GradientCircles from "Standard/decorations/GradientCircles";
+import TrustButton from "Standard/components/TrustButton";
 
 type AccountPropType = {}
 
@@ -50,6 +51,10 @@ const ChangeDataButton = styled.button`
   &:active {
     outline: none
   }
+  
+  &:hover {
+    color: rgba(87, 144, 255, .8)
+  }
 `
 
 const DangerZoneBlock = styled(JustifyStartColumn)`
@@ -83,8 +88,8 @@ const Account = (props: AccountPropType) => {
         <DangerZoneBlock gap={16}>
           <Text fontWeight={600} fontSize={20}>{localized(texts.dangerZone, locale)}</Text>
           <Row gap={8}>
-            <ButtonV3 buttonStyle='black'>{localized(texts.changePasswordButton, locale)}</ButtonV3>
-            <ButtonV3 buttonStyle='red'>{localized(texts.deleteAccountButton, locale)}</ButtonV3>
+            <TrustButton style='black' rippleColor={'rgba(0, 0, 0, 0.2)'}>{localized(texts.changePasswordButton, locale)}</TrustButton>
+            <TrustButton style='red' rippleColor={'rgba(255, 255, 255, 0.2)'}>{localized(texts.deleteAccountButton, locale)}</TrustButton>
           </Row>
         </DangerZoneBlock>
       </CardWrapper>
