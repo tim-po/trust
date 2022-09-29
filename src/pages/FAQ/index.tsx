@@ -7,6 +7,7 @@ import {JustifyStartColumn} from 'Standard/styles/GlobalStyledComponents'
 import Text from 'components/Text'
 import FAQTile from "components/FAQTile";
 import TrustButton from "Standard/components/TrustButton";
+import {IQuestion} from "types/FAQ";
 
 type FAQPropType = {}
 
@@ -51,7 +52,7 @@ const ZIndexWrapper = styled.div`
 
 const FAQ = (props: FAQPropType) => {
   const {locale} = useContext(LocaleContext)
-  const [allQuestions, setAllQuestions] = useState()
+  const [allQuestions, setAllQuestions] = useState<IQuestion[]>(mockQuestions)
 
   return (
     <Container>
@@ -71,7 +72,11 @@ const FAQ = (props: FAQPropType) => {
           <div className='mt-10'/>
           <Text fontWeight={600} fontSize={20}>{localized(texts.askedQuestions, locale)}</Text>
           <div style={{marginTop: '15px'}}/>
-          <FAQTile/>
+          {allQuestions.map(question =>
+            <div key={question.id}>
+              <FAQTile title={question.title} body={question.body}/>
+            </div>)
+          }
         </JustifyStartColumn>
       </ZIndexWrapper>
     </Container>

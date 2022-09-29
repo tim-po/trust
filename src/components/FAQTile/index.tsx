@@ -8,7 +8,10 @@ import Text from 'components/Text';
 import FAQButtonIcon from 'icons/FAQButton'
 import {AlignCenterRow} from 'Standard/styles/GlobalStyledComponents'
 
-type FAQTilePropType = {}
+type FAQTilePropType = {
+  title: string,
+  body: string
+}
 
 const FAQTileDefaultProps = {}
 
@@ -52,6 +55,7 @@ const DocumentsContainerOpenCloseButton = styled.button<{ isExtended: boolean }>
 
 const FAQTile = (props: FAQTilePropType) => {
   const {locale} = useContext(LocaleContext)
+  const {title, body} = props
 
   const [isDocumentsExtended, setIsDocumentsExtended] = useState<boolean>(false)
 
@@ -61,12 +65,12 @@ const FAQTile = (props: FAQTilePropType) => {
 
   return (
     <DocumentsContainer isExtended={isDocumentsExtended} onClick={toggleFAQTile}>
-        <Text fontSize={20} fontWeight={600}>Documents</Text>
+        <Text fontSize={20} fontWeight={600}>{title}</Text>
         <DocumentsContainerOpenCloseButton isExtended={isDocumentsExtended}>
           <FAQButtonIcon/>
         </DocumentsContainerOpenCloseButton>
       <div style={{marginBottom: '16px'}}/>
-      <Text fontWeight={400} fontSize={15} color={'rgba(24, 24, 51, .8)'}>LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</Text>
+      <Text fontWeight={400} fontSize={15} color={'rgba(24, 24, 51, .8)'}>{body}</Text>
     </DocumentsContainer>
   )
 };

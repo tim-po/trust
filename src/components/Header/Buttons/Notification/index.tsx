@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import NotificationIcon from 'icons/Notification'
 import styled, {css} from "styled-components";
 import ServerNotificationContext from "Standard/ServerNotificationContext";
@@ -15,7 +15,7 @@ const IconWrapper = styled.div`
   cursor: pointer;
 `
 
-const ActiveNotification = styled.div`
+const UnreadNotificationIcon = styled.div`
   position: absolute;
   top: 8px;
   right: 8px;
@@ -26,33 +26,38 @@ const ActiveNotification = styled.div`
   border: 1px solid #fff;
 `
 
-const ActiveNotificationWrapper = styled.div<{isNotificationsActive: boolean}>`
+const UnreadNotificationIconWrapper = styled.div<{isUnreadIconActive: boolean}>`
   opacity: 1;
 
-  ${({ isNotificationsActive }) => isNotificationsActive && css`
+  ${({ isUnreadIconActive }) => !isUnreadIconActive && css`
     transition: opacity 0.3s;
     opacity: 0;
   `};
 `
 
 const NotificationButton = () => {
-  const {setIsNotificationsActive, isNotificationsActive} = useContext(ServerNotificationContext)
-  const [isIconActive, setIsActiveIcon] = useState<boolean>(false)
+  const {setIsNotificationsActive, isNotificationsActive, notifications} = useContext(ServerNotificationContext)
 
-  const setIconStatus = () => {
-    setIsActiveIcon(!isIconActive)
-  }
+  const [isUnreadIconActive, setIsUnreadIconActive] = useState(false)
 
-  const setNotificationActive = () => {
+  useEffect(() => {
+    if (notifications.length > 0) {
+      setIsUnreadIconActive(true)
+      return
+    }
+    setIsUnreadIconActive(false)
+  }, [notifications.length])
+
+  const toggleNotificationActive = () => {
     setIsNotificationsActive(!isNotificationsActive)
   }
 
   return (
-    <IconWrapper onMouseEnter={setIconStatus} onMouseLeave={setIconStatus} onClick={setNotificationActive}>
-      <ActiveNotificationWrapper isNotificationsActive={isNotificationsActive}>
-        <ActiveNotification />
-      </ActiveNotificationWrapper>
-      <NotificationIcon animate={isIconActive}/>
+    <IconWrapper onClick={toggleNotificationActive}>
+      <UnreadNotificationIconWrapper isUnreadIconActive={isUnreadIconActive}>
+        <UnreadNotificationIcon />
+      </UnreadNotificationIconWrapper>
+      <NotificationIcon/>
     </IconWrapper>
   );
 };
