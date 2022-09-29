@@ -1,18 +1,19 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import texts from './localization'
-import LocaleContext from "../../../Standard/LocaleContext";
-import {localized} from "../../../Standard/utils/localized";
-import Text from "../../Text";
-import VerificationTile from "../../VerificationTile";
-import DocumentRulesGallery from "../../DocumentRulesGallery";
+import LocaleContext from "Standard/LocaleContext";
+import {localized} from "Standard/utils/localized";
+import Text from "components/Text";
+import VerificationTile from "components/VerificationTile";
+import DocumentRulesGallery from "components/DocumentRulesGallery";
 import './index.css';
-import CameraIcon from '../../../icons/Camera';
+import CameraIcon from 'icons/Camera';
 import styled from "styled-components";
-import {API_URL} from "../../../api/constants";
+import {API_URL} from "api/constants";
 import {useCookies} from "react-cookie";
-import {FieldStatus, InputsStatusEnum} from "../../../types";
-import CheckMark from '../../../icons/CheckMark';
-import DocumentTextRules from "../../DocumentTextRules";
+import {InputsStatusEnum} from "types/Input";
+import CheckMark from 'icons/CheckMark';
+import DocumentTextRules from "components/DocumentTextRules";
+import {FieldStatus} from "types/UserData";
 
 type DocumentsPropType = {
   onChangeData: (data: any) => void

@@ -1,18 +1,20 @@
 import React, {useContext, useEffect, useState} from "react";
 import texts from "./localization";
-import LocaleContext from "../../../Standard/LocaleContext";
-import {localized} from "../../../Standard/utils/localized";
+import LocaleContext from "Standard/LocaleContext";
+import {localized} from "Standard/utils/localized";
 import "./index.css";
-import VerificationTile from "../../VerificationTile";
-import Text from "../../Text";
+import VerificationTile from "components/VerificationTile";
+import Text from "components/Text";
 import styled from "styled-components";
-import useValidatedState, {validationFuncs, validationFuncsFactory} from "../../../Standard/hooks/useValidatedState";
-import SimpleInput from "../../../Standard/components/SimpleInput";
-import {AllFieldsDict, Country, FieldStatus, InputsStatusEnum} from "../../../types";
-import SimpleLabelContainer from "../../../Standard/components/SimpleLabelContainer";
-import SimpleAutocomplete from "../../../Standard/components/SimpleAutocomplete";
-import useIsFirstRender from "../../../Standard/hooks/useIsFirstRender";
-import CheckMark from "../../../icons/CheckMark";
+import useValidatedState, {validationFuncs, validationFuncsFactory} from "Standard/hooks/useValidatedState";
+import SimpleInput from "Standard/components/SimpleInput";
+import {AllFieldsDict, InputsStatusEnum} from "types/Input";
+import SimpleLabelContainer from "Standard/components/SimpleLabelContainer";
+import SimpleAutocomplete from "Standard/components/SimpleAutocomplete";
+import useIsFirstRender from "Standard/hooks/useIsFirstRender";
+import CheckMark from "icons/CheckMark";
+import {Country} from "types/Country";
+import {FieldStatus} from "types/UserData";
 
 type ResidencePropType = {
   onChangeData: (data: any) => void,

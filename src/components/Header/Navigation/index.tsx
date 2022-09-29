@@ -3,7 +3,7 @@ import {NavLink} from "react-router-dom";
 import styled from 'styled-components'
 import {localized} from "Standard/hooks/localized";
 import LocaleContext from "Standard/LocaleContext";
-import {NavItemsEnum} from "types";
+import {NavItemsEnum} from "types/NavItems";
 import texts from './localization'
 
 type NavItemProps = {

@@ -1,18 +1,19 @@
 import React, {useContext, useEffect, useState} from "react";
 import texts from "./localization";
-import LocaleContext from "../../../Standard/LocaleContext";
-import {localized} from "../../../Standard/utils/localized";
-import VerificationTile from "../../VerificationTile";
-import Text from "../../Text";
-import useValidatedState, {validationFuncs} from "../../../Standard/hooks/useValidatedState";
-import SimpleInput from "../../../Standard/components/SimpleInput";
-import SimpleLabelContainer from "../../../Standard/components/SimpleLabelContainer";
+import LocaleContext from "Standard/LocaleContext";
+import {localized} from "Standard/utils/localized";
+import VerificationTile from "components/VerificationTile";
+import Text from "components/Text";
+import useValidatedState, {validationFuncs} from "Standard/hooks/useValidatedState";
+import SimpleInput from "Standard/components/SimpleInput";
+import SimpleLabelContainer from "Standard/components/SimpleLabelContainer";
 import {Checkbox} from "antd";
 import {CheckboxChangeEvent} from "antd/lib/checkbox";
-import {FieldStatus, InputsStatusEnum} from "../../../types";
-import useIsFirstRender from "../../../Standard/hooks/useIsFirstRender";
-import setInnerValueInLocalStorage from "../../../utils/setInnerValueInLocalStorage";
-import CheckMark from "../../../icons/CheckMark";
+import {FieldStatus} from "types/UserData";
+import useIsFirstRender from "Standard/hooks/useIsFirstRender";
+import setInnerValueInLocalStorage from "utils/setInnerValueInLocalStorage";
+import CheckMark from "icons/CheckMark";
+import {InputsStatusEnum} from "types/Input";
 
 type WalletVerificationPropType = {
   onChangeData: (data: any) => void,

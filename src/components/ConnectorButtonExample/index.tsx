@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom";
 import texts from './localization'
 import {localized} from 'Standard/utils/localized';
 import LocaleContext from 'Standard/LocaleContext'
-import {ConnectorButtonsEnum} from "../../types";
+import {ConnectorButtonsEnum} from "types/ConnectorButtons";
 
 type ConnectorButtonProps = {
   text: ConnectorButtonsEnum;

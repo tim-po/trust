@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import texts from './localization'
 import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
@@ -11,6 +11,29 @@ import TrustButton from "Standard/components/TrustButton";
 type FAQPropType = {}
 
 const FAQDefaultProps = {}
+
+const mockQuestions = [
+  {
+    id: 1,
+    title: 'What is a venture company?',
+    body: 'Venture companies are rapidly growing businesses that take investments to accelerate its growth rates. The final goal of the venture company is to make an Exit to give a liquidity for venture investors. Exits could be done via public exchange listing or by selling the entire company to another company.'
+  },
+  {
+    id: 2,
+    title: 'What are direct and non-direct deals??',
+    body: 'Venture companies are rapidly growing businesses that take investments to accelerate its growth rates. The final goal of the venture company is to make an Exit to give a liquidity for venture investors. Exits could be done via public exchange listing or by selling the entire company to another company.'
+  },
+  {
+    id: 3,
+    title: "Why can't I just buy the shares directly from the shareholder??",
+    body: 'Venture companies are rapidly growing businesses that take investments to accelerate its growth rates. The final goal of the venture company is to make an Exit to give a liquidity for venture investors. Exits could be done via public exchange listing or by selling the entire company to another company.'
+  },
+  {
+    id: 4,
+    title: 'Who are we buying these shares from??',
+    body: 'Venture companies are rapidly growing businesses that take investments to accelerate its growth rates. The final goal of the venture company is to make an Exit to give a liquidity for venture investors. Exits could be done via public exchange listing or by selling the entire company to another company.'
+  }
+]
 
 const Container = styled.div`
   display: flex;
@@ -28,6 +51,7 @@ const ZIndexWrapper = styled.div`
 
 const FAQ = (props: FAQPropType) => {
   const {locale} = useContext(LocaleContext)
+  const [allQuestions, setAllQuestions] = useState()
 
   return (
     <Container>

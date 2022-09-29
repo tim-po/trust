@@ -10,12 +10,14 @@ import PaymentIcon from 'icons/PaymentMethod';
 import SecurityIcon from 'icons/SecuritySettings';
 import PersonalIcon from 'icons/PersonalData';
 import LogoutIcon from 'icons/Logout';
-import {HeaderButton} from "Standard/types";
+import {HeaderButton} from "Standard/types/HeaderButton";
 import {RouteName} from "router";
-import {ConnectorButtonsEnum, NavItems, NavItemsEnum} from "types";
+import {ConnectorButtonsEnum} from "types/ConnectorButtons";
 import NavItem from "components/Header/Navigation";
 import GradientCircles from "./Standard/decorations/GradientCircles";
 import {useCookies} from "react-cookie";
+import {NavItemsEnum} from "types/NavItems";
+import {NavItems} from 'Standard/types/NavItems';
 
 export const App = () => {
 

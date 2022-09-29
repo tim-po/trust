@@ -1,24 +1,26 @@
 import React, {useContext, useEffect, useState} from "react";
 import texts from "./localization";
-import LocaleContext from "../../../Standard/LocaleContext";
-import {localized} from "../../../Standard/utils/localized";
+import LocaleContext from "Standard/LocaleContext";
+import {localized} from "Standard/utils/localized";
 import "./index.css";
-import VerificationTile from "../../VerificationTile";
+import VerificationTile from "components/VerificationTile";
 import Text from "../../Text";
 import styled from "styled-components";
 import useValidatedState, {
   validationDateFuncs,
   validationFuncs,
   validationFuncsFactory
-} from "../../../Standard/hooks/useValidatedState";
-import SimpleInput from "../../../Standard/components/SimpleInput";
-import SimpleDatePicker from "../../../Standard/components/SimpleDatePicker";
-import SimpleLabelContainer from "../../../Standard/components/SimpleLabelContainer";
-import SimpleAutocomplete from "../../../Standard/components/SimpleAutocomplete";
-import {Country, FieldStatus, InputsStatusEnum} from "../../../types";
-import CheckMark from "../../../icons/CheckMark";
-import {AllFieldsDict} from "../../../types";
-import useIsFirstRender from "../../../Standard/hooks/useIsFirstRender";
+} from "Standard/hooks/useValidatedState";
+import SimpleInput from "Standard/components/SimpleInput";
+import SimpleDatePicker from "Standard/components/SimpleDatePicker";
+import SimpleLabelContainer from "Standard/components/SimpleLabelContainer";
+import SimpleAutocomplete from "Standard/components/SimpleAutocomplete";
+import {Country} from "types/Country";
+
+import CheckMark from "icons/CheckMark";
+import {AllFieldsDict, InputsStatusEnum} from "types/Input";
+import useIsFirstRender from "Standard/hooks/useIsFirstRender";
+import {FieldStatus} from "types/UserData";
 
 type IdentityInformationPropType = {
   onChangeData: (data: any) => void
