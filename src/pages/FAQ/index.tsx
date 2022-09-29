@@ -37,7 +37,12 @@ const FAQ = (props: FAQPropType) => {
             <Text fontWeight={600} fontSize={45} color={'#33CC66'}>{localized(texts.title, locale)}</Text>
             <Text fontWeight={500} fontSize={20}>{localized(texts.anyQuestion, locale)}</Text>
             <Text fontWeight={400} fontSize={16}>{localized(texts.replayTime, locale)}</Text>
-            <TrustButton style='green' rippleColor={'rgba(255, 255, 255, 0.2)'}>{localized(texts.sendEmailButton, locale)}</TrustButton>
+            <TrustButton
+              isValid
+              style='green'
+            >
+              {localized(texts.sendEmailButton, locale)}
+            </TrustButton>
           </JustifyStartColumn>
           <div className='mt-10'/>
           <Text fontWeight={600} fontSize={20}>{localized(texts.askedQuestions, locale)}</Text>

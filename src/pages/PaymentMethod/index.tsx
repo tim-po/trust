@@ -129,7 +129,6 @@ const PaymentMethod = (props: PaymentMethodPropType) => {
             isValid={transferAddressValid}
             onClick={() => {}}
             style='green'
-            rippleColor={'rgba(0, 0, 0, 0.1)'}
           >
             <SpinnerContainer>
               <Spinner color={'#33CC66'} size={isLoading ? 25 : 0}/>
