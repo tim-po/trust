@@ -26,5 +26,9 @@ export default {
   addWalletButton: {
     en: "Add",
     ja: "追加"
-  }
+  },
+  copied:{
+    en: 'Copied',
+    ja: 'コピー機'
+  },
 }

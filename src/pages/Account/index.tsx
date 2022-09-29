@@ -88,7 +88,7 @@ const Account = (props: AccountPropType) => {
           <Text fontWeight={600} fontSize={20}>{localized(texts.dangerZone, locale)}</Text>
           <Row gap={8}>
             <TrustButton style='black' rippleColor={'rgba(0, 0, 0, 0.2)'}>{localized(texts.changePasswordButton, locale)}</TrustButton>
-            <TrustButton style='red' rippleColor={'rgba(255, 255, 255, 0.2)'}>{localized(texts.deleteAccountButton, locale)}</TrustButton>
+            <TrustButton style='red'>{localized(texts.deleteAccountButton, locale)}</TrustButton>
           </Row>
         </DangerZoneBlock>
       </CardWrapper>
