@@ -11,7 +11,6 @@ import useValidatedState, {validationFuncs} from "Standard/hooks/useValidatedSta
 import SimpleLabelContainer from "Standard/components/SimpleLabelContainer";
 import SimpleInput from "Standard/components/SimpleInput";
 import ButtonV2 from "Standard/components/ButtonV2";
-import GradientCircles from "Standard/decorations/GradientCircles";
 
 type PaymentMethodPropType = {}
 
@@ -95,7 +94,6 @@ const PaymentMethod = (props: PaymentMethodPropType) => {
           <ButtonV2 isValid={transferAddressValid} onClick={() => {}}>{localized(texts.addWalletButton, locale)}</ButtonV2>
         </JustifyStartColumn>
       </CardWrapper>
-      <GradientCircles />
     </Container>
   )
 };

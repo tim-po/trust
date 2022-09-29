@@ -6,7 +6,6 @@ import styled from "styled-components";
 import {JustifyStartColumn} from 'Standard/styles/GlobalStyledComponents'
 import Text from 'components/Text'
 import FAQTile from "components/FAQTile";
-import GradientCircles from "Standard/decorations/GradientCircles";
 import TrustButton from "Standard/components/TrustButton";
 
 type FAQPropType = {}
@@ -46,7 +45,6 @@ const FAQ = (props: FAQPropType) => {
           <FAQTile/>
         </JustifyStartColumn>
       </ZIndexWrapper>
-      <GradientCircles/>
     </Container>
   )
 };

@@ -14,15 +14,19 @@ import {HeaderButton} from "Standard/types";
 import {RouteName} from "router";
 import {ConnectorButtonsEnum, NavItems, NavItemsEnum} from "types";
 import NavItem from "components/Header/Navigation";
+import GradientCircles from "./Standard/decorations/GradientCircles";
+import {useCookies} from "react-cookie";
 
 export const App = () => {
+
+  const [cookies, setCookies] = useCookies(["auth"]);
 
   const buttons: HeaderButton[] = [
     <ConnectorButton text={ConnectorButtonsEnum.ACCOUNT} url={RouteName.ACCOUNT} icon={<AccountIcon />} />,
     <ConnectorButton text={ConnectorButtonsEnum.PERSONAL_DATA} url={RouteName.VERIFICATION} icon={<PersonalIcon />} />,
     <ConnectorButton text={ConnectorButtonsEnum.SECURITY_SETTINGS} url={RouteName.SECURITY} icon={<SecurityIcon />} />,
     <ConnectorButton text={ConnectorButtonsEnum.PAYMENT_INFORMATION} url={RouteName.PAYMENT_METHOD} icon={<PaymentIcon />} />,
-    <ConnectorButton text={ConnectorButtonsEnum.LOGOUT} icon={<LogoutIcon />} />,
+    <ConnectorButton text={ConnectorButtonsEnum.LOGOUT} icon={<LogoutIcon /> }/>,
   ]
 
   const navItems: NavItems[] = [
@@ -44,7 +48,10 @@ export const App = () => {
         <Notification/>,
       ]}
     >
-      <AppRouter/>
+      <>
+        <AppRouter/>
+        <GradientCircles />
+      </>
     </StandardAppContainer>
   );
 };

@@ -5,7 +5,6 @@ import {localized} from "Standard/utils/localized";
 import styled from "styled-components";
 import Text from "components/Text";
 import {JustifyStartColumn, SpaceBetweenRow, Row} from "Standard/styles/GlobalStyledComponents";
-import GradientCircles from "Standard/decorations/GradientCircles";
 import TrustButton from "Standard/components/TrustButton";
 
 type AccountPropType = {}
@@ -93,7 +92,6 @@ const Account = (props: AccountPropType) => {
           </Row>
         </DangerZoneBlock>
       </CardWrapper>
-      <GradientCircles />
     </Container>
   )
 };

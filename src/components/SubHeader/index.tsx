@@ -2,17 +2,23 @@ import React, {useContext} from "react";
 import texts from './localization'
 import LocaleContext from "../../Standard/LocaleContext";
 import {localized} from "../../Standard/utils/localized";
-import AccountVerificationBackground from '../../icons/AccountVerificationBackground';
 import Text from '../Text';
 import './index.css'
 import styled from "styled-components";
 
-type SubHeaderPropType = {}
+type SubHeaderPropType = {
+  backgroundIcon: React.ReactNode,
+  greenTitle: string,
+  blackTitle?: string,
+  subtitle?: string
+}
 
 const SubHeaderDefaultProps = {}
 
 const FlexWrapper = styled.div`
-  min-height: 225px;
+  z-index: 2;
+  min-height: 140px;
+  height: max-content;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,18 +59,18 @@ const SubTitleWrapper = styled.div`
 
 const SubHeader = (props: SubHeaderPropType) => {
   const {locale} = useContext(LocaleContext)
-
+  const {backgroundIcon, greenTitle, blackTitle, subtitle} = props
   return (
     <FlexWrapper>
       <BackgroundImage>
-        <AccountVerificationBackground/>
+        {backgroundIcon}
       </BackgroundImage>
       <TextFlexWrapper>
-        <Text fontWeight={700} fontSize={45} color={'#33CC66'} adaptiveFontWeight={34}>{localized(texts.account, locale)}</Text>
-        <Text fontWeight={700} fontSize={45} color={'#181833'} adaptiveFontWeight={34}>{localized(texts.verification, locale)}</Text>
+        <Text fontWeight={700} fontSize={45} color={'#33CC66'} adaptiveFontWeight={34}>{greenTitle}</Text>
+        <Text fontWeight={700} fontSize={45} color={'#181833'} adaptiveFontWeight={34}>{blackTitle}</Text>
       </TextFlexWrapper>
       <SubTitleWrapper>
-        <Text fontWeight={400} fontSize={24} color={'#181833'} adaptiveFontWeight={18}>{localized(texts.verifyAccount, locale)}</Text>
+        <Text fontWeight={400} fontSize={24} color={'#181833'} adaptiveFontWeight={18}>{subtitle}</Text>
       </SubTitleWrapper>
     </FlexWrapper>
   )

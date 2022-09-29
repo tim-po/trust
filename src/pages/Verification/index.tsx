@@ -1,25 +1,27 @@
 import React, {useContext, useEffect, useState} from "react";
 import texts from "./localization";
-import LocaleContext from "../../Standard/LocaleContext";
-import UserDataContext from "../../Standard/UserDataContext";
-import {localized} from "../../Standard/utils/localized";
+import LocaleContext from "Standard/LocaleContext";
+import UserDataContext from "Standard/UserDataContext";
+import {localized} from "Standard/utils/localized";
 import styled, {css} from "styled-components";
-import Text from "../../components/Text";
-import Wallet from "../../components/VerificationTiles/Wallet";
-import IdentityInformation from "../../components/VerificationTiles/IdentityInformation";
-import Documents from "../../components/VerificationTiles/Documents";
-import VerificationIcon from "../../icons/Verified";
-import Residence from "../../components/VerificationTiles/Residence";
-import useValidatedState, {ControlledValidationState, validationFuncs} from "../../Standard/hooks/useValidatedState";
-import {API_URL} from "../../api/constants";
-import {Country, UserData} from "../../types";
-import Info from "../../icons/Info/index";
+import Text from "components/Text";
+import Wallet from "components/VerificationTiles/Wallet";
+import IdentityInformation from "components/VerificationTiles/IdentityInformation";
+import Documents from "components/VerificationTiles/Documents";
+import VerificationIcon from "icons/Verified";
+import Residence from "components/VerificationTiles/Residence";
+import useValidatedState, {ControlledValidationState, validationFuncs} from "Standard/hooks/useValidatedState";
+import {API_URL} from "api/constants";
+import {Country, UserData} from "types";
+import Info from "icons/Info/index";
 import {useCookies} from "react-cookie";
 import ForceValidateContext from "Standard/ForceValidateContext";
-import SubHeader from "../../components/SubHeader";
-import Disk from '../../icons/Disk';
-import ButtonV2 from "../../Standard/components/ButtonV2";
+import SubHeader from "components/SubHeader";
+import Disk from 'icons/Disk';
+import ButtonV2 from "Standard/components/ButtonV2";
 import GradientCircles from "Standard/decorations/GradientCircles";
+import AccountVerificationBackground from "icons/AccountVerificationBackground";
+
 type VerificationPropType = {}
 
 const VerificationDefaultProps = {};
@@ -245,7 +247,12 @@ const Verification = (props: VerificationPropType) => {
   return (
     <ForceValidateContext.Provider value={{setForceValidate: setIsForceValid, forceValidate: isForceValid}}>
       <VerificationPageContainer>
-        <SubHeader/>
+        <SubHeader
+          backgroundIcon={<AccountVerificationBackground />}
+          greenTitle={localized(texts.account, locale)}
+          blackTitle={localized(texts.verification, locale)}
+          subtitle={localized(texts.verifyAccount, locale)}
+        />
         <FormWrapper>
           <PaddingWrapper>
             {isUserVerified ?
@@ -339,7 +346,6 @@ const Verification = (props: VerificationPropType) => {
             }
           </PaddingWrapper>
         </FormWrapper>
-        <GradientCircles/>
       </VerificationPageContainer>
     </ForceValidateContext.Provider>
   );
