@@ -40,8 +40,10 @@ const NotificationButton = () => {
 
   const [isUnreadIconActive, setIsUnreadIconActive] = useState(false)
 
+  const isNotificationsNotEmpty = notifications.length
+
   useEffect(() => {
-    if (notifications.length > 0) {
+    if (notifications.length) {
       setIsUnreadIconActive(true)
       return
     }
@@ -55,9 +57,9 @@ const NotificationButton = () => {
   return (
     <IconWrapper onClick={toggleNotificationActive}>
       <UnreadNotificationIconWrapper isUnreadIconActive={isUnreadIconActive}>
-        <UnreadNotificationIcon />
+        <UnreadNotificationIcon/>
       </UnreadNotificationIconWrapper>
-      <NotificationIcon/>
+      <NotificationIcon isActive={isNotificationsNotEmpty}/>
     </IconWrapper>
   );
 };

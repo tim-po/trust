@@ -4,7 +4,8 @@ import './index.scss'
 // If icon uses more than one adjustable color you can pass colors from props
 // BUT you must always provide default values for color props
 
-export default () => {
+export default (props) => {
+  const {isActive} = props
   return (
     <svg width='25' height='25' viewBox='0 0 20 20'>
       <g id='Page-1' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
@@ -15,7 +16,7 @@ export default () => {
           </path>
           <path
             d='M16,9 C16,5.93 14.36,3.36 11.5,2.68 L11.5,2 C11.5,1.17 10.83,0.5 10,0.5 C9.17,0.5 8.5,1.17 8.5,2 L8.5,2.68 C5.63,3.36 4,5.92 4,9 L4,14 L2,16 L2,17 L18,17 L18,16 L16,14 L16,9 Z'
-            id='Path' fillRule='nonzero'/>
+            id={`${isActive ? 'Path' : ''}`} fillRule='nonzero'/>
         </g>
       </g>
     </svg>
