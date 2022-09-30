@@ -25,7 +25,7 @@ const AppRouter = () => {
                  key={route.path}
           />
         )}
-        <Redirect to={RouteName.VERIFICATION}/>
+        <Redirect to={RouteName.NOT_FOUND}/>
       </Switch>
       :
       <Switch>

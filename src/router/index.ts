@@ -7,6 +7,7 @@ import Account from "pages/Account";
 import FAQ from 'pages/FAQ';
 import Manage from "pages/Manage";
 import Invest from 'pages/Invest'
+import NoPageError from "Standard/components/404";
 
 export interface IRoute {
   path: string
@@ -23,7 +24,8 @@ export enum RouteName {
   FAQ = '/FAQ',
   SECURITY = '/security',
   INVEST = '/invest',
-  MANAGE = '/manage'
+  MANAGE = '/manage',
+  NOT_FOUND = '/not-found'
 }
 
 export const publicRoutes: IRoute[] = [
@@ -38,4 +40,5 @@ export const privateRoutes: IRoute[] = [
   {path: RouteName.FAQ, component: FAQ, exact: true},
   {path: RouteName.INVEST, component: Invest, exact: true},
   {path: RouteName.MANAGE, component: Manage, exact: true},
+  {path: RouteName.NOT_FOUND, component: NoPageError, exact: true},
 ]
