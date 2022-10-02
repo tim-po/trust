@@ -83,7 +83,11 @@ const Registration = (props: RegistrationPropType) => {
 
   const isValid = emailValid && repeatedPasswordValid && passwordValid;
 
-  async function registration(): Promise<{ code: number, error: string }> {
+  async function setNewUser() {
+    if (!isValid) return;
+
+    setIsLoading(true);
+
     const registrationUrl = `${API_URL}/api/auth/registration`;
     const requestOptions = {
       method: "POST",
@@ -94,25 +98,19 @@ const Registration = (props: RegistrationPropType) => {
         password2: sha256(repeatedPassword).toString()
       })
     };
+
     return fetch(registrationUrl, requestOptions)
-      .then(res => res.json());
-  }
-
-  async function checkErrorsAndRegisterUser() {
-
-    if (!isValid) return;
-
-    setIsLoading(true);
-
-    const {code, error} = await registration();
-
-    if (code !== (200 || 201)) {
-      setIsError(true);
-      setErrorMessage(error);
-    } else {
-      setIsWaitingForCode(true)
-    }
-    setIsLoading(false);
+      .then(res => res.json())
+      .then(json => {
+        if (json.statusCode !== 200 || json.statusMessage !== 201) {
+          setIsError(true)
+          setErrorMessage(json.message)
+        } else {
+          setIsWaitingForCode(true)
+        }
+      })
+      .catch(e => {})
+      .finally(() => setIsLoading(false))
   }
 
   async function sendCode() {
@@ -125,23 +123,24 @@ const Registration = (props: RegistrationPropType) => {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         login: email,
-        code: +code
+        recoveryCode: +code
       })
     };
 
     fetch(TwoFAUrl, requestOptions)
-      .then(res => res.json()).then(json => {
-        if (json.code === 200) {
+      .then(res => res.json())
+      .then(json => {
+        if (json.statusCode !== 200 || json.statusCode !== 201) {
+          setIncorrectCodeError(json.message)
+        } else {
           setCookie("auth", json.data.token, {path: window.location.pathname});
           history.push(RouteName.VERIFICATION);
-        } else {
-         setIncorrectCodeError(json.error)
         }
-    });
+      })
   }
 
   useEffect(() => {
-    if(isWaitingForCode && code.length === 4){
+    if (isWaitingForCode && code.length === 4) {
       sendCode()
     }
   }, [isWaitingForCode, code])
@@ -167,7 +166,7 @@ const Registration = (props: RegistrationPropType) => {
         <SimpleLabelContainer label={localized(texts.passwordLabel, locale)} id="new-password-text-field">
           <SimpleInput
             hasIcon
-            Icon={<ShowAndHidePassword passwordType={passwordType} setPasswordType={setPasswordType} />}
+            Icon={<ShowAndHidePassword passwordType={passwordType} setPasswordType={setPasswordType}/>}
             required
             isValid={passwordValid}
             errorTooltipText={`${localized(texts.incorrectPasswordWarning, locale)}`}
@@ -185,7 +184,7 @@ const Registration = (props: RegistrationPropType) => {
         <SimpleLabelContainer label={localized(texts.confirmPasswordLabel, locale)} id="confirm-password-text-field">
           <SimpleInput
             hasIcon
-            Icon={<ShowAndHidePassword passwordType={repeatPasswordType} setPasswordType={setRepeatPasswordType} />}
+            Icon={<ShowAndHidePassword passwordType={repeatPasswordType} setPasswordType={setRepeatPasswordType}/>}
             required
             isValid={repeatedPasswordValid}
             id="confirm-password-text-field"
@@ -201,11 +200,11 @@ const Registration = (props: RegistrationPropType) => {
           />
         </SimpleLabelContainer>
 
-        {isError && <ErrorMessage message={errorMessage}/>}
+        {isError && <ErrorMessage message={errorMessage} />}
 
         <Button
           isValid={isValid}
-          onClick={checkErrorsAndRegisterUser}
+          onClick={setNewUser}
         >
           {
             isLoading ?

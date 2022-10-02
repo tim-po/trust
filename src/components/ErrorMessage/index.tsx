@@ -10,7 +10,7 @@ type ErrorMessagePropType = {
 }
 
 const ErrorMessageDefaultProps = {
-  message: 'Account already exists. Please Log in',
+  message: '',
   title: 'Error signing in'
 }
 
@@ -24,6 +24,7 @@ const ErrorMessageContainer = styled.div`
   background: rgba(200, 83, 72, .1);
   border-radius: 4px;
   margin-bottom: 25px;
+  z-index: 1000;
 `
 
 const ErrorMessage = (props: ErrorMessagePropType) => {

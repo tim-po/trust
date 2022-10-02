@@ -32,6 +32,7 @@ const TwoFAContainer = styled.div`
   padding: 50px 45px;
   width: 480px;
   margin-bottom: 20px;
+  z-index: 1000;
 `
 
 const TextWrapper = styled.div`

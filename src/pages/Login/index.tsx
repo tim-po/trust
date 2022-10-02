@@ -73,6 +73,10 @@ const Login = (props: LoginPropType) => {
   const [cookies, setCookie] = useCookies(["auth"]);
 
   async function setUser() {
+    if (!isValid) return;
+
+    setIsLoading(true);
+
     const registrationUrl = `${API_URL}/api/auth/login`;
     const requestOptions = {
       method: "POST",
@@ -82,34 +86,19 @@ const Login = (props: LoginPropType) => {
         password: sha256(password).toString()
       })
     };
+
     return fetch(registrationUrl, requestOptions)
-      .then(res => {
-        if (res.ok) {
-          setIsLoading(false);
-          setIsServerError(false);
-          setIsWaitingForCode(true);
+      .then(res => res.json())
+      .then(json => {
+        if (json.statusCode !== 200 || json.statusMessage !== 201) {
+          setIsServerError(true)
+          setServerErrorMessage(json.message)
         } else {
-          if (res.status === 302) {
-            setServerErrorMessage(localized(texts.incorrectCredentials, locale))
-          } else {
-            setServerErrorMessage(localized(texts.somethingWentWrong, locale))
-          }
-          return Promise.reject(res)
+          setIsWaitingForCode(true)
         }
       })
-      .catch(() => {
-        setIsServerError(true);
-        setIsLoading(false);
-        setIsWaitingForCode(false)
-      });
-  }
-
-  async function login() {
-    if (!isValid) return;
-
-    setIsLoading(true);
-    setIsServerError(false);
-    await setUser();
+      .catch((e) => {})
+      .finally(() => setIsLoading(false))
   }
 
   const handleEnterPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -117,7 +106,7 @@ const Login = (props: LoginPropType) => {
       if (isWaitingForCode) {
         sendCode()
       } else {
-        login()
+        setUser()
       }
     }
   }
@@ -134,17 +123,18 @@ const Login = (props: LoginPropType) => {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         login: email,
-        code: +code
+        recoveryCode: +code
       })
     };
 
     fetch(TwoFAUrl, requestOptions)
-      .then(res => res.json()).then(json => {
-      if (json.code === 200) {
+      .then(res => res.json())
+      .then(json => {
+      if (json.statusCode !== 200 || json.statusCode !== 201) {
+        setIncorrectCodeError(json.message)
+      } else {
         setCookie("auth", json.data.token, {path: window.location.pathname});
         history.push(RouteName.VERIFICATION);
-      } else {
-        setIncorrectCodeError(json.error)
       }
     })
   }
@@ -217,7 +207,7 @@ const Login = (props: LoginPropType) => {
         }
         <Button
           isValid={isValid}
-          onClick={login}
+          onClick={setUser}
         >
           {
             isLoading ?

@@ -22,6 +22,8 @@ const FormWrapper = styled.div`
   padding: 24px 32px;
   border: 1px solid rgba(24, 24, 51, 0.1);
   border-radius: 16px;
+  background: #fff;
+  z-index: 1000;
   
   @media screen and (max-width: 900px) {
     width: 80%;

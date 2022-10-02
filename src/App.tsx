@@ -52,7 +52,7 @@ export const App = () => {
     >
       <>
         <AppRouter/>
-        {/*<GradientCircles />*/}
+        <GradientCircles />
       </>
     </StandardAppContainer>
   );
