@@ -15,6 +15,7 @@ import useIsFirstRender from "Standard/hooks/useIsFirstRender";
 import CheckMark from "icons/CheckMark";
 import {Country} from "types/Country";
 import {FieldStatus} from "types/UserData";
+import setInnerValueInLocalStorage from "utils/setInnerValueInLocalStorage";
 
 type ResidencePropType = {
   onChangeData: (data: any) => void,
@@ -111,12 +112,12 @@ const Residence = (props: ResidencePropType) => {
     }
   }
 
-  function setResidenceInner(residence: { data: {}, isValid: boolean }) {
-    if (!isFirstRender) {
-      localStorage.setItem("residence", JSON.stringify(residence.data));
-      onChangeData(residence);
-    }
-  }
+  // function setResidenceInner(residence: { data: {}, isValid: boolean }) {
+  //   if (!isFirstRender) {
+  //     localStorage.setItem("residence", JSON.stringify(residence.data));
+  //     onChangeData(residence);
+  //   }
+  // }
 
   useEffect(() => {
     const residence = localStorage.getItem("residence");
@@ -152,10 +153,19 @@ const Residence = (props: ResidencePropType) => {
     countries]);
 
   useEffect(() => {
-    setResidenceInner({
-      data: {country, city, zip, mainStreet, additionalStreet, region},
-      isValid: countryValid && cityValid && zipValid && (mainStreetValid || additionalStreetValid) && regionValid
-    });
+    setInnerValueInLocalStorage(
+      {
+        data: {country, city, zip, mainStreet, additionalStreet, region},
+        isValid: countryValid && cityValid && zipValid && (mainStreetValid || additionalStreetValid) && regionValid
+      },
+      'residence',
+      isFirstRender,
+      onChangeData
+    )
+    // setResidenceInner({
+    //   data: {country, city, zip, mainStreet, additionalStreet, region},
+    //   isValid: countryValid && cityValid && zipValid && (mainStreetValid || additionalStreetValid) && regionValid
+    // });
   }, [country, city, zip, mainStreet, additionalStreet, countryValid, cityValid, zipValid, mainStreetValid, additionalStreetValid, regionValid, region]);
 
   return (

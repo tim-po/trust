@@ -82,7 +82,7 @@ const PaymentMethod = (props: PaymentMethodPropType) => {
 
   return (
     <Container>
-      <Text fontWeight={600} fontSize={25}>{localized(texts.title, locale)}</Text>
+      <Text fontWeight={600} fontSize={40}>{localized(texts.title, locale)}</Text>
       <CardWrapper gap={30}>
         <SpaceBetweenRow>
           <JustifyStartColumn>

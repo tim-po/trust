@@ -82,12 +82,12 @@ const Documents = (props: DocumentsPropType) => {
   const isValid = mainDoc !== "" && additionalDoc !== ""
 
   async function getUserToken(body: FormData) {
-    const userTokenUrl = `${API_URL}/api/validation/upload`;
+    const userTokenUrl = `${API_URL}/api/images/upload`;
 
     const response = await fetch(userTokenUrl, {
       method: 'POST',
       headers: {
-        'Authorization': cookies.auth
+        'Authorization': cookies.auth.token
       },
       mode: 'cors',
       cache: 'no-cache',
@@ -116,8 +116,8 @@ const Documents = (props: DocumentsPropType) => {
 
     const response = await getUserToken(body)
 
-    if (response && response.data.token)
-      return response.data.token
+    if (response && response.token)
+      return response.token
   }
 
   const handleMainFileChange = (event: any) => {
@@ -125,7 +125,7 @@ const Documents = (props: DocumentsPropType) => {
     if (event.target.files && event.target.files[0]) {
       // @ts-ignore
       uploadFiles('main', event.target.files[0]).then(token => {
-        setMainDoc(`${API_URL}/api/images/main/${cookies.auth}?${new Date().getTime()}`)
+        setMainDoc(`${API_URL}/api/images/main/${cookies.auth.token}?${new Date().getTime()}`)
         setMainToken(token)
       })
     }
@@ -135,7 +135,7 @@ const Documents = (props: DocumentsPropType) => {
     if (event.target.files && event.target.files[0]) {
       // @ts-ignore
       uploadFiles('additional', event.target.files[0]).then(token => {
-        setAdditionalDoc(`${API_URL}/api/images/additional/${cookies.auth}?${new Date().getTime()}`)
+        setAdditionalDoc(`${API_URL}/api/images/additional/${cookies.auth.token}?${new Date().getTime()}`)
         setAdditionalToken(token)
       })
     }
@@ -146,19 +146,16 @@ const Documents = (props: DocumentsPropType) => {
 
     const requestOptions = {
       method: "GET",
-      headers: {"Content-Type": "application/json"}
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": cookies.auth.token
+      }
     };
 
-    fetch(`${photosUrl}/main/${cookies.auth}?${new Date().getTime()}`, requestOptions)
-      .then(res => {
-        if (res.status === 200) {
-          setMainDoc(res.url)
-        } else {
-          setMainDoc(undefined)
-        }
-      })
+    fetch(`${photosUrl}/main/${cookies.auth.token}?${new Date().getTime()}`, requestOptions)
+      .then(res => console.log(res))
 
-    fetch(`${photosUrl}/additional/${cookies.auth}?${new Date().getTime()}`, requestOptions)
+    fetch(`${photosUrl}/additional/${cookies.auth.token}?${new Date().getTime()}`, requestOptions)
       .then(res => {
         if (res.status === 200) {
           setAdditionalDoc(res.url)

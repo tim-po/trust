@@ -30,8 +30,9 @@ const VerificationPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding-top: 40px;
+  justify-content: center;
+  padding: 36px;
+  width: 100%;
 
   z-index: 1;
 
@@ -68,7 +69,7 @@ const FormWrapper = styled.div`
   width: 800px;
   background: #fff;
   z-index: 1000;
-
+  margin-top: 25px;
   @media screen and (max-width: 900px) {
     width: 90%;
   }
@@ -137,9 +138,11 @@ const Verification = (props: VerificationPropType) => {
       method: "GET",
       headers: {"Content-Type": "application/json"}
     };
+
     fetch(registrationUrl, requestOptions)
       .then(res => res.json())
-      .then(obj => setCountries(obj.data));
+      .then(countries => setCountries(countries))
+      .catch((e) => console.log(e))
   };
 
   async function sendUserData() {
@@ -183,38 +186,38 @@ const Verification = (props: VerificationPropType) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": cookies.auth
+        "Authorization": cookies.auth.token
       }
     };
 
     fetch(userDataUrl, requestOptions)
       .then(res => res.json())
       .then(userData => {
-        if (userData && userData.data) {
-          setUserData(userData.data);
-          const data = userData.data
+        if (Object.keys(userData).length) {
+          setUserData(userData)
           localStorage.setItem("identityInformation", JSON.stringify({
-            nationality: data.nationality.value,
-            firstName: data.firstName.value,
-            middleName: data.middleName.value,
-            lastName: data.lastName.value,
-            bDate: data.bDate.value
+            nationality: userData.nationality.value,
+            firstName: userData.firstName.value,
+            middleName: userData.middleName.value,
+            lastName: userData.lastName.value,
+            bDate: userData.bDate.value
           }));
           localStorage.setItem("residence", JSON.stringify({
-            country: data.country.value,
-            city: data.city.value,
-            zip: data.zip.value,
-            mainStreet: data.mainStreet.value,
-            additionalStreet: data.additionalStreet.value,
-            region: data.region.value
+            country: userData.country.value,
+            city: userData.city.value,
+            zip: userData.zip.value,
+            mainStreet: userData.mainStreet.value,
+            additionalStreet: userData.additionalStreet.value,
+            region: userData.region.value
           }));
           localStorage.setItem("wallet", JSON.stringify({
-            wallet: data.wallet.value,
-            isBSCNetwork: !!data.wallet.value
+            wallet: userData.wallet.value,
+            isBSCNetwork: !!userData.wallet.value
           }));
         }
         setIsLoading(false)
-      });
+      })
+      .catch((e) => console.log(''))
   }
 
   async function getStatusOfUser() {
@@ -224,7 +227,7 @@ const Verification = (props: VerificationPropType) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": cookies.auth
+        "Authorization": cookies.auth.token
       }
     };
 
@@ -246,12 +249,13 @@ const Verification = (props: VerificationPropType) => {
   return (
     <ForceValidateContext.Provider value={{setForceValidate: setIsForceValid, forceValidate: isForceValid}}>
       <VerificationPageContainer>
-        <SubHeader
-          backgroundIcon={<AccountVerificationBackground />}
-          greenTitle={localized(texts.account, locale)}
-          blackTitle={localized(texts.verification, locale)}
-          subtitle={localized(texts.verifyAccount, locale)}
-        />
+        {/*<SubHeader*/}
+        {/*  backgroundIcon={<AccountVerificationBackground/>}*/}
+        {/*  greenTitle={localized(texts.account, locale)}*/}
+        {/*  blackTitle={localized(texts.verification, locale)}*/}
+        {/*  subtitle={localized(texts.verifyAccount, locale)}*/}
+        {/*/>*/}
+        <Text fontWeight={600} fontSize={40}>{localized(texts.pageTitle, locale)}</Text>
         <FormWrapper>
           <PaddingWrapper>
             {isUserVerified ?
@@ -281,7 +285,8 @@ const Verification = (props: VerificationPropType) => {
             <IconWrapper width={20} height={20}>
               <Disk/>
             </IconWrapper>
-            <Text fontWeight={600} fontSize={14} color={'#fff'} adaptiveFontWeight={12}>{localized(texts.automaticallySave, locale)}</Text>
+            <Text fontWeight={600} fontSize={14} color={'#fff'}
+                  adaptiveFontWeight={12}>{localized(texts.automaticallySave, locale)}</Text>
           </SaveDataInfoBlock>
           <PaddingWrapper>
             <Wallet

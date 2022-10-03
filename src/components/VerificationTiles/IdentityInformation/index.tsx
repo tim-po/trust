@@ -16,7 +16,7 @@ import SimpleDatePicker from "Standard/components/SimpleDatePicker";
 import SimpleLabelContainer from "Standard/components/SimpleLabelContainer";
 import SimpleAutocomplete from "Standard/components/SimpleAutocomplete";
 import {Country} from "types/Country";
-
+import setInnerValueInLocalStorage from "utils/setInnerValueInLocalStorage";
 import CheckMark from "icons/CheckMark";
 import {AllFieldsDict, InputsStatusEnum} from "types/Input";
 import useIsFirstRender from "Standard/hooks/useIsFirstRender";
@@ -100,12 +100,12 @@ const IdentityInformation = (props: IdentityInformationPropType) => {
     }
   }, [isFirstRender])
 
-  function setIdentityInformationInner(identityInformation: { data: {}, isValid: boolean }) {
-    if (!isFirstRender) {
-      localStorage.setItem('identityInformation', JSON.stringify(identityInformation.data))
-      onChangeData(identityInformation)
-    }
-  }
+  // function setIdentityInformationInner(identityInformation: { data: {}, isValid: boolean }) {
+  //   if (!isFirstRender) {
+  //     localStorage.setItem('identityInformation', JSON.stringify(identityInformation.data))
+  //     onChangeData(identityInformation)
+  //   }
+  // }
 
   useEffect(() => {
     const identityInformation = localStorage.getItem("identityInformation");
@@ -131,12 +131,21 @@ const IdentityInformation = (props: IdentityInformationPropType) => {
   }, [isFirstRender, localStorageData.firstName, localStorageData.bDate, localStorageData.lastName, localStorageData.middleName, localStorageData.nationality, countries])
 
   useEffect(() => {
-    setIdentityInformationInner(
+    setInnerValueInLocalStorage(
       {
         data: {nationality, firstName, lastName, middleName, bDate},
         isValid: firstNameValid && lastNameValid && nationalityValid && bDateValid
-      }
-    );
+      },
+      'identityInformation',
+      isFirstRender,
+      onChangeData
+    )
+    // setIdentityInformationInner(
+    //   {
+    //     data: {nationality, firstName, lastName, middleName, bDate},
+    //     isValid: firstNameValid && lastNameValid && nationalityValid && bDateValid
+    //   }
+    // );
   }, [nationality, firstName, lastName, middleName, bDate, firstNameValid, lastNameValid, nationalityValid, bDateValid]);
 
   useEffect(() => {

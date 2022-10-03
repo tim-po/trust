@@ -29,7 +29,6 @@ const WalletVerification = (props: WalletVerificationPropType) => {
   const {locale} = useContext(LocaleContext);
   const {onChangeData, fieldStatus, isLoading} = props;
 
-
   const [[wallet, setTransferAddress], transferAddressValid] = useValidatedState<string>("", validationFuncs.isAddress);
   const [checkboxChecked, setCheckboxChecked] = useState<boolean>(false);
 
@@ -45,13 +44,6 @@ const WalletVerification = (props: WalletVerificationPropType) => {
       localStorage.setItem('wallet', JSON.stringify(localStorageData))
     }
   }, [isFirstRender])
-
-  // function setWalletInner(wallet: { data: {}, isValid: boolean }) {
-  //   if (!isFirstRender) {
-  //     localStorage.setItem('wallet', JSON.stringify(wallet.data))
-  //     onChangeData(wallet)
-  //   }
-  // }
 
   useEffect(() => {
     setInnerValueInLocalStorage(

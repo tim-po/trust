@@ -102,11 +102,11 @@ const Registration = (props: RegistrationPropType) => {
     return fetch(registrationUrl, requestOptions)
       .then(res => res.json())
       .then(json => {
-        if (json.statusCode !== 200 || json.statusMessage !== 201) {
+        if (json.statusCode === 200 || json.statusMessage === 201) {
+          setIsWaitingForCode(true)
+        } else {
           setIsError(true)
           setErrorMessage(json.message)
-        } else {
-          setIsWaitingForCode(true)
         }
       })
       .catch(e => {})
@@ -130,11 +130,11 @@ const Registration = (props: RegistrationPropType) => {
     fetch(TwoFAUrl, requestOptions)
       .then(res => res.json())
       .then(json => {
-        if (json.statusCode !== 200 || json.statusCode !== 201) {
-          setIncorrectCodeError(json.message)
-        } else {
-          setCookie("auth", json.data.token, {path: window.location.pathname});
+        if (json.statusCode === 200 || json.statusCode === 201) {
+          setCookie("auth", json.token, {path: window.location.pathname});
           history.push(RouteName.VERIFICATION);
+        } else {
+          setIncorrectCodeError(json.message)
         }
       })
   }

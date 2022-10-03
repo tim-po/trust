@@ -65,7 +65,7 @@ const Account = (props: AccountPropType) => {
 
   return (
     <Container>
-      <Text fontWeight={600} fontSize={25}>{localized(texts.title, locale)}</Text>
+      <Text fontWeight={600} fontSize={40}>{localized(texts.title, locale)}</Text>
       <CardWrapper>
         <ContactInformationBlock gap={16}>
           <Text fontWeight={600} fontSize={20}>{localized(texts.contactInformation, locale)}</Text>

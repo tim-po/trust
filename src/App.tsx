@@ -18,6 +18,7 @@ import GradientCircles from "./Standard/decorations/GradientCircles";
 import {useCookies} from "react-cookie";
 import {NavItemsEnum} from "types/NavItems";
 import {NavItems} from 'Standard/types/NavItems';
+import ErrorBoundary from "Standard/components/ErrorBoundary";
 
 export const App = () => {
 
