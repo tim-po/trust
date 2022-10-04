@@ -131,7 +131,7 @@ const Login = (props: LoginPropType) => {
       .then(res => res.json())
       .then(json => {
       if (json.statusCode === 200 || json.statusCode === 201) {
-        setCookie("auth", json.token, {path: window.location.pathname});
+        setCookie("auth", json.token);
         history.push(RouteName.VERIFICATION);
       } else {
         setIncorrectCodeError(json.message)

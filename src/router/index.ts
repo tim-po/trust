@@ -16,10 +16,10 @@ export interface IRoute {
 }
 
 export enum RouteName {
-  LOGIN = '/',
+  LOGIN = '/login',
   REGISTRATION = '/registration',
 
-  VERIFICATION = '/',
+  VERIFICATION = '/verification',
   PAYMENT_METHOD = '/payment',
   ACCOUNT = '/account',
   FAQ = '/FAQ',

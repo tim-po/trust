@@ -1,5 +1,5 @@
-import React, {useCallback, useContext, useEffect, useState} from "react";
-import texts from './localization'
+import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
+import texts from './localization';
 import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
 import Text from "components/Text";
@@ -22,7 +22,8 @@ type DocumentsPropType = {
     mainDocument: FieldStatus | undefined,
     additionalDocument: FieldStatus | undefined,
   },
-  isLoading: boolean
+  isLoading: boolean,
+  setIsDocumentsError: (value: boolean) => void
 }
 
 const DocumentsDefaultProps = {}
@@ -64,18 +65,17 @@ const BlurSquare = styled.div`
 `
 
 const Documents = (props: DocumentsPropType) => {
-
   const {locale} = useContext(LocaleContext)
-  const {onChangeData, isSubmitted, documentsStatus, isLoading} = props
-
+  const ref = useRef()
+  const {onChangeData, isSubmitted, documentsStatus, isLoading, setIsDocumentsError} = props
   const [activeButton, setActiveButton] = useState<number>(0)
 
   const [isFirstRender, setIsFirstRender] = useState(true)
 
   const [mainDoc, setMainDoc] = useState<any>(undefined)
-  const [mainToken, setMainToken] = useState(undefined)
   const [additionalDoc, setAdditionalDoc] = useState<any>(undefined)
-  const [additionalToken, setAdditionalToken] = useState(undefined)
+
+  const [token, setToken] = useState(undefined)
 
   const [cookies] = useCookies(['auth']);
 
@@ -87,7 +87,7 @@ const Documents = (props: DocumentsPropType) => {
     const response = await fetch(userTokenUrl, {
       method: 'POST',
       headers: {
-        'Authorization': cookies.auth.token
+        'Authorization': cookies.auth
       },
       mode: 'cors',
       cache: 'no-cache',
@@ -107,11 +107,11 @@ const Documents = (props: DocumentsPropType) => {
 
     switch (documentImportantType) {
       case "additional":
-        if (additionalToken)
-          body.append('token', additionalToken);
+        if (token)
+          body.append('token', token);
       case "main":
-        if (mainToken)
-          body.append('token', mainToken);
+        if (token)
+          body.append('token', token);
     }
 
     const response = await getUserToken(body)
@@ -121,12 +121,11 @@ const Documents = (props: DocumentsPropType) => {
   }
 
   const handleMainFileChange = (event: any) => {
-
     if (event.target.files && event.target.files[0]) {
       // @ts-ignore
       uploadFiles('main', event.target.files[0]).then(token => {
-        setMainDoc(`${API_URL}/api/images/main/${cookies.auth.token}?${new Date().getTime()}`)
-        setMainToken(token)
+        setMainDoc(`${API_URL}/api/images/main/${cookies.auth}?${new Date().getTime()}`)
+        setToken(token)
       })
     }
   }
@@ -135,38 +134,15 @@ const Documents = (props: DocumentsPropType) => {
     if (event.target.files && event.target.files[0]) {
       // @ts-ignore
       uploadFiles('additional', event.target.files[0]).then(token => {
-        setAdditionalDoc(`${API_URL}/api/images/additional/${cookies.auth.token}?${new Date().getTime()}`)
-        setAdditionalToken(token)
+        setAdditionalDoc(`${API_URL}/api/images/additional/${cookies.auth}?${new Date().getTime()}`)
+        setToken(token)
       })
     }
   }
 
-  const getUserPhotos = useCallback(() => {
-    const photosUrl = `${API_URL}/api/images`
-
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": cookies.auth.token
-      }
-    };
-
-    fetch(`${photosUrl}/main/${cookies.auth.token}?${new Date().getTime()}`, requestOptions)
-      .then(res => console.log(res))
-
-    fetch(`${photosUrl}/additional/${cookies.auth.token}?${new Date().getTime()}`, requestOptions)
-      .then(res => {
-        if (res.status === 200) {
-          setAdditionalDoc(res.url)
-        } else {
-          setAdditionalDoc(undefined)
-        }
-      })
-  }, [])
-
   useEffect(() => {
-    getUserPhotos()
+    setMainDoc(`${API_URL}/api/images/main/${cookies.auth}?${new Date().getTime()}`)
+    setAdditionalDoc(`${API_URL}/api/images/additional/${cookies.auth}?${new Date().getTime()}`)
   }, [])
 
   function setDocumentsInner(documents: { data: {}, isValid: boolean }) {
@@ -180,16 +156,16 @@ const Documents = (props: DocumentsPropType) => {
 
   useEffect(() => {
     setDocumentsInner({
-      data: {mainToken, additionalToken, type: "Passport"},
+      data: {token, type: "Passport"},
       isValid
     });
-  }, [mainDoc, additionalDoc, mainToken, additionalToken, activeButton, isValid]);
+  }, [mainDoc, additionalDoc, token, activeButton, isValid]);
 
   return (
     <VerificationTile isValid={isValid}>
       <Text fontSize={24} color={'#000'}>{localized(texts.tileTitle, locale)}</Text>
       <DocumentRulesGallery/>
-      <DocumentTextRules />
+      <DocumentTextRules/>
       <FlexWrapper>
         <LoaderBlockWrapper className={`${isLoading && 'skeleton'}`}>
           {(documentsStatus.mainDocument?.status === InputsStatusEnum.VERIFIED || documentsStatus.mainDocument?.status === InputsStatusEnum.PROCESSING_BY_ADMIN)

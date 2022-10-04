@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import texts from "./localization";
 import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
-import styled, {css} from "styled-components";
+import styled from "styled-components";
 import Text from "components/Text";
 import Wallet from "components/VerificationTiles/Wallet";
 import IdentityInformation from "components/VerificationTiles/IdentityInformation";
@@ -16,10 +16,8 @@ import {UserData} from 'types/UserData';
 import Info from "icons/Info/index";
 import {useCookies} from "react-cookie";
 import ForceValidateContext from "Standard/ForceValidateContext";
-import SubHeader from "components/SubHeader";
 import Disk from 'icons/Disk';
-import ButtonV2 from "Standard/components/ButtonV2";
-import AccountVerificationBackground from "icons/AccountVerificationBackground";
+import TrustButton from "../../Standard/components/TrustButton";
 
 type VerificationPropType = {}
 
@@ -117,7 +115,13 @@ const Verification = (props: VerificationPropType) => {
   }, validationFuncs.controlled);
 
   const [countries, setCountries] = useState<Country[]>([]);
+  const [countriesError, setCountriesError] = useState(false);
+
   const [userData, setUserData] = useState<UserData | undefined>(undefined)
+  const [userDataError, setUserDataError] = useState(false)
+
+  const [isDocumentsError, setIsDocumentsError] = useState(false)
+
   const [isForceValid, setIsForceValid] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -171,11 +175,13 @@ const Verification = (props: VerificationPropType) => {
       body: JSON.stringify(userData)
     };
 
-    fetch(verificationUrl, requestOptions).then(res => {
-      if (res.status === 201) {
-        getUserData()
-      }
-    });
+    fetch(verificationUrl, requestOptions)
+      .then(res => res.json())
+      .then(json => {
+        if (json.statusCode === 200) {
+          getUserData()
+        }
+      });
   }
 
   async function getUserData() {
@@ -186,7 +192,7 @@ const Verification = (props: VerificationPropType) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": cookies.auth.token
+        "Authorization": cookies.auth
       }
     };
 
@@ -227,17 +233,18 @@ const Verification = (props: VerificationPropType) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": cookies.auth.token
+        "Authorization": cookies.auth
       }
     };
 
     fetch(userStatusUrl, requestOptions)
       .then(res => res.json())
       .then(json => {
-        setIsUserVerified(json.data.isVerified);
-        setIsUserSubmitted(json.data.isSubmitted)
+        setIsUserVerified(json.isVerified);
+        setIsUserSubmitted(json.isSubmitted)
       })
-      .catch(e => {})
+      .catch(e => {
+      })
   }
 
   useEffect(() => {
@@ -249,13 +256,8 @@ const Verification = (props: VerificationPropType) => {
   return (
     <ForceValidateContext.Provider value={{setForceValidate: setIsForceValid, forceValidate: isForceValid}}>
       <VerificationPageContainer>
-        {/*<SubHeader*/}
-        {/*  backgroundIcon={<AccountVerificationBackground/>}*/}
-        {/*  greenTitle={localized(texts.account, locale)}*/}
-        {/*  blackTitle={localized(texts.verification, locale)}*/}
-        {/*  subtitle={localized(texts.verifyAccount, locale)}*/}
-        {/*/>*/}
         <Text fontWeight={600} fontSize={40}>{localized(texts.pageTitle, locale)}</Text>
+        {isUserSubmitted && <Text fontWeight={400} fontSize={20}>{localized(texts.buttonTextCheck, locale)}</Text>}
         <FormWrapper>
           <PaddingWrapper>
             {isUserVerified ?
@@ -329,6 +331,7 @@ const Verification = (props: VerificationPropType) => {
               onChangeData={setDocuments}
               isSubmitted={isUserSubmitted}
               isLoading={isLoading}
+              setIsDocumentsError={setIsDocumentsError}
             />
             <FlexStartWrapper>
               <IconWrapper width={20} height={20}>
@@ -339,14 +342,14 @@ const Verification = (props: VerificationPropType) => {
             </FlexStartWrapper>
             <div className='mb-4'/>
             {!isUserVerified &&
-              <ButtonV2
-                className={`${isLoading && 'skeleton'}`}
+              <TrustButton
+                style='green'
                 isValid={isValid}
                 onClick={isUserSubmitted ? () => {
                 } : sendUserData}
               >
-                {isUserSubmitted ? `${localized(texts.buttonTextCheck, locale)}` : `${localized(texts.buttonTextVerify, locale)}`}
-              </ButtonV2>
+                {localized(texts.buttonTextVerify, locale)}
+              </TrustButton>
             }
           </PaddingWrapper>
         </FormWrapper>

@@ -32,8 +32,8 @@ export default {
     ja: "個人情報の確認"
   },
   buttonTextCheck: {
-    en: "We check your personal data",
-    ja: "私たちはあなたの個人データをチェックします"
+    en: "Thank you for submitting your details! We will check them soon.",
+    ja: "詳細を送信していただきありがとうございます。 すぐに確認します。"
   },
 
   accountVerified: {
