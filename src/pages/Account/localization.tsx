@@ -15,6 +15,10 @@ export default {
     en: "Phone",
     ja: "電話"
   },
+  communicationMethod: {
+    en: "Communication method",
+    ja: "通信方法"
+  },
   changeButton: {
     en: "Change",
     ja: "変化する"

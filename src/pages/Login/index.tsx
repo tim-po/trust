@@ -162,7 +162,6 @@ const Login = (props: LoginPropType) => {
   return (
     <LoginPageContainer>
       {!isWaitingForCode && <LogAndRegFormWrapper title={localized(texts.pageTitle, locale)}>
-        <button onClick={() => setCookie('auth', 'xui', {path: '/'})}>cookie</button>
         <SimpleLabelContainer
           label={localized(texts.emailAddressLabel, locale)}
           id={"email"}

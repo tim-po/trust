@@ -11,6 +11,7 @@ import ChangeEmailModal from "components/Modals/ChangeEmail";
 import ChangePhoneModal from "components/Modals/ChangePhone";
 import ChangePasswordModal from "components/Modals/ChangePassword";
 import DeleteAccountModal from "components/Modals/DeleteAccount";
+import ChangeCommunicationMethodModal from "components/Modals/ChangeCommunicationMethod";
 
 type AccountPropType = {}
 
@@ -67,10 +68,15 @@ const DangerZoneBlock = styled(JustifyStartColumn)`
 
 const Account = (props: AccountPropType) => {
   const {locale} = useContext(LocaleContext)
+
   const [showEmailModal, setShowEmailModal] = useState(false)
   const [showPhoneModal, setShowPhoneModal] = useState(false)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false)
+  const [showCommunicationMethodModal, setCommunicationMethodModal] = useState(false)
+
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [email, setEmail] = useState('mmpro@gmail.com')
 
   return (
     <Container>
@@ -81,15 +87,26 @@ const Account = (props: AccountPropType) => {
           <SpaceBetweenRow>
             <Text fontWeight={500} fontSize={16}>{localized(texts.email, locale)}</Text>
             <Row gap={12}>
-              <Text fontWeight={400} fontSize={16}>mmpro@gmail.com</Text>
+              <Text fontWeight={400} fontSize={16}>{email}</Text>
               <ChangeDataButton onClick={() => setShowEmailModal(true)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
             </Row>
           </SpaceBetweenRow>
           <SpaceBetweenRow gap={16}>
             <Text fontWeight={500} fontSize={16}>{localized(texts.phone, locale)}</Text>
             <Row gap={12}>
-              <Text fontWeight={400} fontSize={16}>88005553535</Text>
+              <Text fontWeight={400} fontSize={16}>
+                {phoneNumber ? phoneNumber : '-'}
+              </Text>
               <ChangeDataButton onClick={() => setShowPhoneModal(true)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
+            </Row>
+          </SpaceBetweenRow>
+          <SpaceBetweenRow gap={16}>
+            <Text fontWeight={500} fontSize={16}>{localized(texts.communicationMethod, locale)}</Text>
+            <Row gap={12}>
+              <Text fontWeight={400} fontSize={16}>
+                {phoneNumber ? phoneNumber : '-'}
+              </Text>
+              <ChangeDataButton onClick={() => setCommunicationMethodModal(true)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
             </Row>
           </SpaceBetweenRow>
         </ContactInformationBlock>
@@ -136,6 +153,12 @@ const Account = (props: AccountPropType) => {
         showDeleteAccountModal &&
         <Modal title={'Delete account'} onClose={setShowDeleteAccountModal}>
           <DeleteAccountModal />
+        </Modal>
+      }
+      {
+        showCommunicationMethodModal &&
+        <Modal title={'Change communication method'} onClose={setCommunicationMethodModal}>
+          <ChangeCommunicationMethodModal />
         </Modal>
       }
     </Container>
