@@ -72,6 +72,7 @@ const Login = (props: LoginPropType) => {
 
   const [cookies, setCookie] = useCookies(["auth"]);
 
+
   async function setUser() {
     if (!isValid) return;
 
@@ -86,7 +87,6 @@ const Login = (props: LoginPropType) => {
         password: sha256(password).toString()
       })
     };
-
     return fetch(registrationUrl, requestOptions)
       .then(res => res.json())
       .then(json => {
@@ -131,7 +131,7 @@ const Login = (props: LoginPropType) => {
       .then(res => res.json())
       .then(json => {
       if (json.statusCode === 200 || json.statusCode === 201) {
-        setCookie("auth", json.token);
+        setCookie("auth", json.token, {path: window.location.pathname});
         history.push(RouteName.VERIFICATION);
       } else {
         setIncorrectCodeError(json.message)

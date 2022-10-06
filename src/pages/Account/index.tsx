@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import texts from './localization'
 import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
@@ -6,6 +6,9 @@ import styled from "styled-components";
 import Text from "components/Text";
 import {JustifyStartColumn, SpaceBetweenRow, Row} from "Standard/styles/GlobalStyledComponents";
 import TrustButton from "Standard/components/TrustButton";
+import Modal from 'Standard/components/Modal'
+import ChangeEmailModal from "components/Modals/ChangeEmail";
+import ChangePhoneModal from "components/Modals/ChangePhone";
 
 type AccountPropType = {}
 
@@ -62,6 +65,8 @@ const DangerZoneBlock = styled(JustifyStartColumn)`
 
 const Account = (props: AccountPropType) => {
   const {locale} = useContext(LocaleContext)
+  const [showEmailModal, setShowEmailModal] = useState(false)
+  const [showPhoneModal, setShowPhoneModal] = useState(false)
 
   return (
     <Container>
@@ -73,14 +78,14 @@ const Account = (props: AccountPropType) => {
             <Text fontWeight={500} fontSize={16}>{localized(texts.email, locale)}</Text>
             <Row gap={12}>
               <Text fontWeight={400} fontSize={16}>mmpro@gmail.com</Text>
-              <ChangeDataButton>{localized(texts.changeButton, locale)}</ChangeDataButton>
+              <ChangeDataButton onClick={() => setShowEmailModal(true)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
             </Row>
           </SpaceBetweenRow>
           <SpaceBetweenRow gap={16}>
             <Text fontWeight={500} fontSize={16}>{localized(texts.phone, locale)}</Text>
             <Row gap={12}>
               <Text fontWeight={400} fontSize={16}>88005553535</Text>
-              <ChangeDataButton>{localized(texts.changeButton, locale)}</ChangeDataButton>
+              <ChangeDataButton onClick={() => setShowPhoneModal(true)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
             </Row>
           </SpaceBetweenRow>
         </ContactInformationBlock>
@@ -103,6 +108,18 @@ const Account = (props: AccountPropType) => {
           </Row>
         </DangerZoneBlock>
       </CardWrapper>
+      {
+        showEmailModal &&
+        <Modal title={'Change Email'} onClose={setShowEmailModal}>
+          <ChangeEmailModal />
+        </Modal>
+      }
+      {
+        showPhoneModal &&
+        <Modal title={'Change Phone'} onClose={setShowPhoneModal}>
+          <ChangePhoneModal />
+        </Modal>
+      }
     </Container>
   )
 };

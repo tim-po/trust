@@ -16,7 +16,7 @@ export interface IRoute {
 }
 
 export enum RouteName {
-  LOGIN = '/login',
+  LOGIN = '/',
   REGISTRATION = '/registration',
 
   VERIFICATION = '/verification',

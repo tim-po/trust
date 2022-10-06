@@ -1,5 +1,3 @@
-import React from "react";
-
 export enum ConnectorButtonsEnum {
   ACCOUNT = 'Account',
   PERSONAL_DATA = 'Personal data',
