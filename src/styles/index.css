@@ -162,8 +162,13 @@
 
 @tailwind components;
 
+div[id="root"] {
+    font-family: 'Gilroy', serif;
+}
+
+
 body {
-    font-family: 'Gilroy';
+
     font-style: normal;
     color: white;
     background: black;

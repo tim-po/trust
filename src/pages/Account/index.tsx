@@ -9,6 +9,8 @@ import TrustButton from "Standard/components/TrustButton";
 import Modal from 'Standard/components/Modal'
 import ChangeEmailModal from "components/Modals/ChangeEmail";
 import ChangePhoneModal from "components/Modals/ChangePhone";
+import ChangePasswordModal from "components/Modals/ChangePassword";
+import DeleteAccountModal from "components/Modals/DeleteAccount";
 
 type AccountPropType = {}
 
@@ -67,6 +69,8 @@ const Account = (props: AccountPropType) => {
   const {locale} = useContext(LocaleContext)
   const [showEmailModal, setShowEmailModal] = useState(false)
   const [showPhoneModal, setShowPhoneModal] = useState(false)
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false)
 
   return (
     <Container>
@@ -96,12 +100,14 @@ const Account = (props: AccountPropType) => {
               isValid
               style='black'
               rippleColor={'rgba(0, 0, 0, 0.2)'}
+              onClick={() => setShowPasswordModal(true)}
             >
               {localized(texts.changePasswordButton, locale)}
             </TrustButton>
             <TrustButton
               isValid
               style='red'
+              onClick={() => setShowDeleteAccountModal(true)}
             >
               {localized(texts.deleteAccountButton, locale)}
             </TrustButton>
@@ -118,6 +124,18 @@ const Account = (props: AccountPropType) => {
         showPhoneModal &&
         <Modal title={'Change Phone'} onClose={setShowPhoneModal}>
           <ChangePhoneModal />
+        </Modal>
+      }
+      {
+        showPasswordModal &&
+        <Modal title={'Change Password'} onClose={setShowPasswordModal}>
+          <ChangePasswordModal />
+        </Modal>
+      }
+      {
+        showDeleteAccountModal &&
+        <Modal title={'Delete account'} onClose={setShowDeleteAccountModal}>
+          <DeleteAccountModal />
         </Modal>
       }
     </Container>

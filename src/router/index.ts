@@ -19,7 +19,7 @@ export enum RouteName {
   LOGIN = '/',
   REGISTRATION = '/registration',
 
-  VERIFICATION = '/verification',
+  VERIFICATION = '/',
   PAYMENT_METHOD = '/payment',
   ACCOUNT = '/account',
   FAQ = '/FAQ',

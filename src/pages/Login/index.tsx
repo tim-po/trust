@@ -130,12 +130,12 @@ const Login = (props: LoginPropType) => {
     fetch(TwoFAUrl, requestOptions)
       .then(res => res.json())
       .then(json => {
-      if (json.statusCode === 200 || json.statusCode === 201) {
-        setCookie("auth", json.token, {path: window.location.pathname});
-        history.push(RouteName.VERIFICATION);
-      } else {
-        setIncorrectCodeError(json.message)
-      }
+        if (json.statusCode === 200 || json.statusCode === 201) {
+          setCookie("auth", `${json.token}`, {path: '/'});
+          history.push(RouteName.VERIFICATION);
+        } else {
+          setIncorrectCodeError(json.message)
+        }
     })
   }
 
@@ -162,6 +162,7 @@ const Login = (props: LoginPropType) => {
   return (
     <LoginPageContainer>
       {!isWaitingForCode && <LogAndRegFormWrapper title={localized(texts.pageTitle, locale)}>
+        <button onClick={() => setCookie('auth', 'xui', {path: '/'})}>cookie</button>
         <SimpleLabelContainer
           label={localized(texts.emailAddressLabel, locale)}
           id={"email"}
