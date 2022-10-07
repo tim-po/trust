@@ -5,6 +5,11 @@ import SimpleInput from "../../../Standard/components/SimpleInput";
 import ShowAndHidePassword from "../../ShowAndHidePassword";
 import TrustButton from "../../../Standard/components/TrustButton";
 import useValidatedState, {validationFuncs} from "../../../Standard/hooks/useValidatedState";
+import styled from "styled-components";
+
+const ButtonWrapper = styled.div`
+  width: 180px;
+`
 
 const DeleteAccountModal = () => {
   const [[password, setPassword], currentPasswordValid] = useValidatedState<string>("", validationFuncs.validPassword);
@@ -30,7 +35,9 @@ const DeleteAccountModal = () => {
           onChangeRaw={setPassword}
         />
       </SimpleLabelContainer>
-      <TrustButton style='red' isValid={currentPasswordValid}>Delete account</TrustButton>
+      <ButtonWrapper>
+        <TrustButton style='red' isValid={currentPasswordValid}>Delete account</TrustButton>
+      </ButtonWrapper>
     </JustifyStartColumn>
   );
 };

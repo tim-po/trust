@@ -50,6 +50,10 @@ const ZIndexWrapper = styled.div`
   z-index: 1000;
 `
 
+const ButtonWrapper = styled.div`
+  width: 180px;
+`
+
 const FAQ = (props: FAQPropType) => {
   const {locale} = useContext(LocaleContext)
   const [allQuestions, setAllQuestions] = useState<IQuestion[]>(mockQuestions)
@@ -62,12 +66,14 @@ const FAQ = (props: FAQPropType) => {
             <Text fontWeight={600} fontSize={45} color={'#33CC66'}>{localized(texts.title, locale)}</Text>
             <Text fontWeight={500} fontSize={20}>{localized(texts.anyQuestion, locale)}</Text>
             <Text fontWeight={400} fontSize={16}>{localized(texts.replayTime, locale)}</Text>
-            <TrustButton
-              isValid
-              style='green'
-            >
-              {localized(texts.sendEmailButton, locale)}
-            </TrustButton>
+            <ButtonWrapper>
+              <TrustButton
+                isValid
+                style='green'
+              >
+                {localized(texts.sendEmailButton, locale)}
+              </TrustButton>
+            </ButtonWrapper>
           </JustifyStartColumn>
           <div className='mt-10'/>
           <Text fontWeight={600} fontSize={20}>{localized(texts.askedQuestions, locale)}</Text>

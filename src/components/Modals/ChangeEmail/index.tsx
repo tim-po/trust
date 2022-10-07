@@ -7,6 +7,10 @@ import useValidatedState, {validationFuncs} from "Standard/hooks/useValidatedSta
 import SimpleInput from "Standard/components/SimpleInput";
 import TrustButton from "Standard/components/TrustButton";
 
+const ButtonWrapper = styled.div`
+  width: 180px;
+`
+
 const ChangeEmailModal = () => {
   const [[email, setEmail], emailValid] = useValidatedState<string>("", validationFuncs.isEmail);
   return (
@@ -33,7 +37,9 @@ const ChangeEmailModal = () => {
           }}
         />
       </SimpleLabelContainer>
-      <TrustButton style='green' isValid={emailValid}>Change Email</TrustButton>
+      <ButtonWrapper>
+        <TrustButton style='green' isValid={emailValid}>Change Email</TrustButton>
+      </ButtonWrapper>
     </JustifyStartColumn>
   );
 };

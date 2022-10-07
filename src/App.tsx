@@ -4,7 +4,8 @@ import AppRouter from "router/AppRouter";
 import Notification from 'components/Header/Buttons/Notification'
 import FAQ from 'components/Header/Buttons/FAQ'
 import Email from 'components/Header/Email'
-import ConnectorButton from "components/ConnectorButtonExample";
+import ConnectorButton from "components/ConnectorButtons/ButtonExample";
+import LogoutButton from "components/ConnectorButtons/Logout";
 import AccountIcon from 'icons/Account';
 import PaymentIcon from 'icons/PaymentMethod';
 import SecurityIcon from 'icons/SecuritySettings';
@@ -15,21 +16,17 @@ import {RouteName} from "router";
 import {ConnectorButtonsEnum} from "types/ConnectorButtons";
 import NavItem from "components/Header/Navigation";
 import GradientCircles from "./Standard/decorations/GradientCircles";
-import {useCookies} from "react-cookie";
 import {NavItemsEnum} from "types/NavItems";
 import {NavItems} from 'Standard/types/NavItems';
-import ErrorBoundary from "Standard/components/ErrorBoundary";
 
 export const App = () => {
-
-  const [cookies, setCookies] = useCookies(["auth"]);
 
   const buttons: HeaderButton[] = [
     <ConnectorButton text={ConnectorButtonsEnum.ACCOUNT} url={RouteName.ACCOUNT} icon={<AccountIcon />} />,
     <ConnectorButton text={ConnectorButtonsEnum.PERSONAL_DATA} url={RouteName.VERIFICATION} icon={<PersonalIcon />} />,
     <ConnectorButton text={ConnectorButtonsEnum.SECURITY_SETTINGS} url={RouteName.SECURITY} icon={<SecurityIcon />} />,
     <ConnectorButton text={ConnectorButtonsEnum.PAYMENT_INFORMATION} url={RouteName.PAYMENT_METHOD} icon={<PaymentIcon />} />,
-    <ConnectorButton text={ConnectorButtonsEnum.LOGOUT} icon={<LogoutIcon /> }/>,
+    <LogoutButton text={ConnectorButtonsEnum.LOGOUT} icon={<LogoutIcon /> } url={RouteName.LOGIN}/>,
   ]
 
   const navItems: NavItems[] = [

@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {useHistory} from "react-router-dom";
-import texts from './localization'
+import texts from '../localization'
 import {localized} from 'Standard/utils/localized';
 import LocaleContext from 'Standard/LocaleContext'
 import {ConnectorButtonsEnum} from "types/ConnectorButtons";

@@ -7,8 +7,12 @@ import useValidatedState, {validationFuncs} from "Standard/hooks/useValidatedSta
 import SimpleInput from "Standard/components/SimpleInput";
 import TrustButton from "Standard/components/TrustButton";
 
+const ButtonWrapper = styled.div`
+  width: 180px;
+`
+
 const ChangePhoneModal = () => {
-  const [[email, setEmail], emailValid] = useValidatedState<string>("", validationFuncs.isEmail);
+  const [[phone, setPhone], phoneValid] = useValidatedState<string>("", validationFuncs.hasValue);
   return (
     <JustifyStartColumn>
       <div className='mt-5' />
@@ -22,18 +26,20 @@ const ChangePhoneModal = () => {
       >
         <SimpleInput
           onlyEmmitOnBlur
-          onChangeRaw={setEmail}
+          onChangeRaw={setPhone}
           required
-          isValid={emailValid}
+          isValid={phoneValid}
           errorTooltipText={'Incorrect Phone'}
           inputProps={{
             className: `w-full`,
             placeholder: `Phone number`,
-            value: email
+            value: phone
           }}
         />
       </SimpleLabelContainer>
-      <TrustButton style='green' isValid={emailValid}>Change phone</TrustButton>
+      <ButtonWrapper>
+        <TrustButton style='green' isValid={phoneValid}>Change phone</TrustButton>
+      </ButtonWrapper>
     </JustifyStartColumn>
   );
 };

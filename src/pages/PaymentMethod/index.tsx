@@ -62,7 +62,7 @@ const PaymentMethod = (props: PaymentMethodPropType) => {
   const {locale} = useContext(LocaleContext)
   const {account} = useWeb3React()
 
-  const [[wallet, setTransferAddress], transferAddressValid] = useValidatedState<string>("", validationFuncs.isAddress);
+  const [[wallet, setTransferAddress], transferAddressValid] = useValidatedState<string>('', validationFuncs.isAddress);
 
   const [isLoading, setIsLoading] = useState(false)
 

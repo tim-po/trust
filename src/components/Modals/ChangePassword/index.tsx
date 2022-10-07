@@ -5,6 +5,11 @@ import useValidatedState, {validationFuncs} from "Standard/hooks/useValidatedSta
 import SimpleInput from "Standard/components/SimpleInput";
 import TrustButton from "Standard/components/TrustButton";
 import ShowAndHidePassword from "../../ShowAndHidePassword";
+import styled from "styled-components";
+
+const ButtonWrapper = styled.div`
+  width: 180px;
+`
 
 const ChangePasswordModal = () => {
   const [[currentPassword, setCurrentPassword], currentPasswordValid] = useValidatedState<string>("", validationFuncs.validPassword);
@@ -74,7 +79,9 @@ const ChangePasswordModal = () => {
           onChangeRaw={setNewRepeatPassword}
         />
       </SimpleLabelContainer>
-      <TrustButton style='green' isValid={isValid}>Change Password</TrustButton>
+      <ButtonWrapper>
+        <TrustButton style='green' isValid={isValid}>Change Password</TrustButton>
+      </ButtonWrapper>
     </JustifyStartColumn>
   );
 };

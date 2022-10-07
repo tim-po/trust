@@ -2,16 +2,18 @@ import React, {useContext} from "react";
 import texts from './localization'
 import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
-import GradientCircles from "Standard/decorations/GradientCircles";
 import InvestBackground from "icons/InvestBackground";
 import SubHeader from "components/SubHeader";
 import styled from "styled-components";
+import DealItem from "components/DealItem";
 
 type InvestPropType = {}
 
 const InvestDefaultProps = {}
 
 const Container = styled.div`
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,6 +31,9 @@ const Invest = (props: InvestPropType) => {
         backgroundIcon={<InvestBackground />}
         greenTitle={localized(texts.invest, locale)}
       />
+      <DealItem />
+      <DealItem />
+      <DealItem />
     </Container>
   )
 };

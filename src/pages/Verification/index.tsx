@@ -94,6 +94,10 @@ const IconWrapper = styled.div<{ height: number, width: number }>`
   height: ${p => p.height}px;
 `
 
+const ButtonWrapper = styled.div`
+  width: 220px;
+`
+
 const Verification = (props: VerificationPropType) => {
   const {locale} = useContext(LocaleContext);
 
@@ -342,14 +346,16 @@ const Verification = (props: VerificationPropType) => {
             </FlexStartWrapper>
             <div className='mb-4'/>
             {!isUserVerified &&
-              <TrustButton
-                style='green'
-                isValid={isValid}
-                onClick={isUserSubmitted ? () => {
-                } : sendUserData}
-              >
-                {localized(texts.buttonTextVerify, locale)}
-              </TrustButton>
+              <ButtonWrapper>
+                <TrustButton
+                  style='green'
+                  isValid={isValid}
+                  onClick={isUserSubmitted ? () => {
+                  } : sendUserData}
+                >
+                  {localized(texts.buttonTextVerify, locale)}
+                </TrustButton>
+              </ButtonWrapper>
             }
           </PaddingWrapper>
         </FormWrapper>

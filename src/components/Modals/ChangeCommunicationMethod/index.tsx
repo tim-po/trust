@@ -5,11 +5,30 @@ import TrustButton from "../../../Standard/components/TrustButton";
 import useValidatedState, {validationFuncs, validationFuncsFactory} from "Standard/hooks/useValidatedState";
 import SimpleAutocomplete from "Standard/components/SimpleAutocomplete";
 import SimpleInput from "Standard/components/SimpleInput";
+import styled from "styled-components";
+
+const UserContactsWrapper = styled.div`
+  animation: appear 0.2s ease-out;
+  @keyframes appear {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+`
+
+const ButtonWrapper = styled.div`
+  width: 180px;
+`
 
 const ChangeCommunicationMethodModal = () => {
   const methods = ['Telegram', 'WhatsApp', 'Email']
-  const [[nationality, setNationality], nationalityValid] = useValidatedState<string>("", validationFuncsFactory.inArray<string>(methods.map(method => method)));
-  const [[personalData, setPersonalData], personalDataValid] = useValidatedState<string>("", validationFuncs.hasValue);
+  const [[communicationMethods, setCommunicationMethods], communicationMethodsValid] = useValidatedState<string>("", validationFuncsFactory.inArray<string>(methods.map(method => method)));
+  const [[personalContact, setPersonalContact], personalDataValid] = useValidatedState<string>("", validationFuncs.hasValue);
+
+  const isValid = communicationMethodsValid && personalDataValid
 
   return (
     <JustifyStartColumn>
@@ -19,8 +38,8 @@ const ChangeCommunicationMethodModal = () => {
         id="shipping country-name"
       >
         <SimpleAutocomplete
-          isValid={nationalityValid}
-          onChangeRaw={setNationality}
+          isValid={communicationMethodsValid}
+          onChangeRaw={setCommunicationMethods}
           errorTooltipText={"Invalid communication method"}
           required
           placeholder={'Communication method'}
@@ -30,28 +49,32 @@ const ChangeCommunicationMethodModal = () => {
           options={methods.map(method => {
             return ({value: method})
           })}
-          value={nationality}
+          value={communicationMethods}
         />
       </SimpleLabelContainer>
-      {nationality &&
-        <SimpleLabelContainer label={'Write your phone/username/email'} id="new-password-text-field">
-          <SimpleInput
-            hasIcon
-            required
-            isValid={personalDataValid}
-            inputProps={{
-              placeholder: `Password`,
-              type: 'text',
-              name: "new-password",
-              className: "w-full"
-            }}
-            autoComplete={"new-password"}
-            id="new-password-text-field"
-            onChangeRaw={setPersonalData}
-          />
-        </SimpleLabelContainer>
+      {communicationMethods && communicationMethodsValid &&
+       <UserContactsWrapper>
+         <SimpleLabelContainer label={`Write your ${communicationMethods} contacts`} id="new-password-text-field">
+           <SimpleInput
+             hasIcon
+             required
+             isValid={personalDataValid}
+             inputProps={{
+               placeholder: `Password`,
+               type: 'text',
+               name: "new-password",
+               className: "w-full"
+             }}
+             autoComplete={"new-password"}
+             id="new-password-text-field"
+             onChangeRaw={setPersonalContact}
+           />
+         </SimpleLabelContainer>
+       </UserContactsWrapper>
       }
-      <TrustButton style='green' isValid={nationalityValid}>Change method</TrustButton>
+      <ButtonWrapper>
+        <TrustButton style='green' isValid={isValid}>Change method</TrustButton>
+      </ButtonWrapper>
     </JustifyStartColumn>
   );
 };
