@@ -1,25 +1,22 @@
 import React, {useContext, useEffect, useState} from "react";
 import texts from "./localization";
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
+import LocaleContext from "Standard/LocaleContext";
+import {localized} from "Standard/utils/localized";
 import styled from "styled-components";
-import {Link, useHistory} from "react-router-dom";
-import {RouteName} from "../../router";
-import {API_URL} from "../../api/constants";
+import {Link} from "react-router-dom";
+import {RouteName} from "router";
+import {API_URL} from "api/constants";
 import sha256 from "crypto-js/sha256";
-import useValidatedState, {validationFuncs} from "../../Standard/hooks/useValidatedState";
-import {useCookies} from "react-cookie";
-import ErrorMessage from "../../components/ErrorMessage";
-import Spinner from "../../Standard/components/Spinner";
-import SimpleInput from "../../Standard/components/SimpleInput";
-import SimpleLabelContainer from "../../Standard/components/SimpleLabelContainer";
-import LogAndRegFormWrapper from "../../components/LogAndRegFormWrapper";
-import Button from '../../Standard/components/ButtonV2';
+import useValidatedState, {validationFuncs} from "Standard/hooks/useValidatedState";
+import ErrorMessage from "components/ErrorMessage";
+import Spinner from "Standard/components/Spinner";
+import SimpleInput from "Standard/components/SimpleInput";
+import SimpleLabelContainer from "Standard/components/SimpleLabelContainer";
+import LogAndRegFormWrapper from "components/LogAndRegFormWrapper";
 import TwoFA from "../TwoFA";
-
-type LoginPropType = {}
-
-const LoginDefaultProps = {};
+import TrustButton from "Standard/components/TrustButton";
+import {AnimatedWrapper} from "styles/StyledComponents";
+import {usePrevious} from 'Standard/hooks/usePrevious';
 
 const LoginPageContainer = styled.div`
   display: flex;
@@ -54,24 +51,38 @@ const FlexLinksWrapper = styled.div`
   margin-top: 24px;
 `;
 
-const Login = (props: LoginPropType) => {
+const ForgotPasswordLink = styled(Link)`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #5984D9;
+  margin-bottom: 25px;
+
+  &:focus,
+  &:active {
+    outline: none
+  }
+
+  &:hover {
+    color: rgba(87, 144, 255, .8)
+`
+
+const Login = () => {
   const {locale} = useContext(LocaleContext);
 
   const [[email, setEmail], emailValid] = useValidatedState<string>("", validationFuncs.isEmail);
   const [[password, setPassword], passwordValid] = useValidatedState<string>("", validationFuncs.validPassword);
 
-  const [isWaitingForCode, setIsWaitingForCode] = useState<boolean>(false)
-  const [[code, setCode], codeValid] = useValidatedState<string>("", validationFuncs.hasValue);
-
-  const history = useHistory();
-
   const [isLoading, setIsLoading] = useState(false);
+  const [isWaitingForCode, setIsWaitingForCode] = useState<boolean>(false)
+
   const [isServerError, setIsServerError] = useState<boolean>(false);
   const [serverErrorMessage, setServerErrorMessage] = useState<any>('')
-  const [incorrectCodeError, setIncorrectCodeError] = useState()
 
-  const [cookies, setCookie] = useCookies(["auth"]);
+  const prevEmailRef = usePrevious(email)
+  const prevPasswordRef = usePrevious(password)
 
+  const isValid = emailValid && passwordValid;
 
   async function setUser() {
     if (!isValid) return;
@@ -103,43 +114,9 @@ const Login = (props: LoginPropType) => {
 
   const handleEnterPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if ((event.code === "Enter" || event.code === "NumpadEnter")) {
-      if (isWaitingForCode) {
-        sendCode()
-      } else {
         setUser()
-      }
     }
   }
-
-  async function sendCode() {
-
-    if (!codeValid) {
-      return
-    }
-
-    const TwoFAUrl = `${API_URL}/api/auth/login/code`;
-    const requestOptions = {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        login: email,
-        recoveryCode: +code
-      })
-    };
-
-    fetch(TwoFAUrl, requestOptions)
-      .then(res => res.json())
-      .then(json => {
-        if (json.statusCode === 200 || json.statusCode === 201) {
-          setCookie("auth", `${json.token}`, {path: '/'});
-          history.push(RouteName.VERIFICATION);
-        } else {
-          setIncorrectCodeError(json.message)
-        }
-    })
-  }
-
-  const isValid = emailValid && passwordValid;
 
   useEffect(() => {
     if (email && password) {
@@ -154,10 +131,10 @@ const Login = (props: LoginPropType) => {
   }, [email, password]);
 
   useEffect(() => {
-    if (isWaitingForCode && code.length === 4) {
-      sendCode()
+    if (isServerError && (prevEmailRef !== email || prevPasswordRef !== password)) {
+      setIsServerError(false)
     }
-  }, [isWaitingForCode, code])
+  }, [isServerError, email, password])
 
   return (
     <LoginPageContainer>
@@ -198,14 +175,18 @@ const Login = (props: LoginPropType) => {
             onChangeRaw={setPassword}
           />
         </SimpleLabelContainer>
-        {
-          isServerError &&
-          <ErrorMessage
-            message={serverErrorMessage}
-            title={localized(texts.errorSignIn, locale)}
-          />
-        }
-        <Button
+        <ForgotPasswordLink to={RouteName.FORGOT_PASSWORD}>Forgot password?</ForgotPasswordLink>
+        <AnimatedWrapper isActive={isServerError}>
+          {
+            isServerError &&
+            <ErrorMessage
+              message={serverErrorMessage}
+              title={localized(texts.errorSignIn, locale)}
+            />
+          }
+        </AnimatedWrapper>
+        <TrustButton
+          style='green'
           isValid={isValid}
           onClick={setUser}
         >
@@ -215,17 +196,26 @@ const Login = (props: LoginPropType) => {
               :
               `${localized(texts.buttonText, locale)}`
           }
-        </Button>
+        </TrustButton>
         <FlexLinksWrapper>
           <TextLink to={RouteName.REGISTRATION}>{localized(texts.signUp, locale)}</TextLink>
         </FlexLinksWrapper>
-      </LogAndRegFormWrapper>}
-      {isWaitingForCode && <TwoFA otpCode={code} setOptCode={setCode} serverErrorMessage={incorrectCodeError} setIsWaitingForCode={setIsWaitingForCode}/>}
+      </LogAndRegFormWrapper>
+      }
+      {
+        isWaitingForCode &&
+        <TwoFA
+          email={email}
+          setIsWaitingForCode={setIsWaitingForCode}
+          isWaitingForCode={isWaitingForCode}
+          serverUrl={`${API_URL}/api/auth/login/code`}
+          appUrl={RouteName.VERIFICATION}
+        />
+      }
     </LoginPageContainer>
   );
 };
 
-Login.defaultProps = LoginDefaultProps;
 
 export default Login;
 

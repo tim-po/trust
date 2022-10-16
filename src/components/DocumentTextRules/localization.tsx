@@ -20,7 +20,7 @@ export default {
     ja: "白黒画像はありません"
   },
   noEdited: {
-    en: "No edited or expire documents",
+    en: "No edited or expired documents",
     ja: "編集済みまたは期限切れのドキュメントはありません"
   }
 }

@@ -112,13 +112,6 @@ const Residence = (props: ResidencePropType) => {
     }
   }
 
-  // function setResidenceInner(residence: { data: {}, isValid: boolean }) {
-  //   if (!isFirstRender) {
-  //     localStorage.setItem("residence", JSON.stringify(residence.data));
-  //     onChangeData(residence);
-  //   }
-  // }
-
   useEffect(() => {
     const residence = localStorage.getItem("residence");
     const parsed = JSON.parse(`${residence}`);
@@ -162,14 +155,10 @@ const Residence = (props: ResidencePropType) => {
       isFirstRender,
       onChangeData
     )
-    // setResidenceInner({
-    //   data: {country, city, zip, mainStreet, additionalStreet, region},
-    //   isValid: countryValid && cityValid && zipValid && (mainStreetValid || additionalStreetValid) && regionValid
-    // });
   }, [country, city, zip, mainStreet, additionalStreet, countryValid, cityValid, zipValid, mainStreetValid, additionalStreetValid, regionValid, region]);
 
   return (
-    <VerificationTile isValid={countryValid && cityValid && zipValid && (mainStreetValid || additionalStreetValid)}>
+    <VerificationTile>
       <Text fontSize={24} color={"#000"}>{localized(texts.tileTitle, locale)}</Text>
       <div className={"mb-4"}/>
       <FlexWrapper>
@@ -202,7 +191,7 @@ const Residence = (props: ResidencePropType) => {
               className={`${isLoading && 'skeleton'}`}
             />
           </SimpleLabelContainer>
-          {fieldsStatus.country && fieldsStatus.country.status === InputsStatusEnum.VERIFIED && <CheckMark/>}
+          {fieldsStatus.country && fieldsStatus.country.status === InputsStatusEnum.VERIFIED && <CheckMark color={'#33CC66'} height={20} width={20}/>}
         </div>
         {Object.keys(ResidenceInformationFormFields).map((field) => (
           <div className="flex" key={field}>
@@ -232,7 +221,7 @@ const Residence = (props: ResidencePropType) => {
                 id={ResidenceInformationFormFields[field].id}
               />
             </SimpleLabelContainer>
-            {ResidenceInformationFormFields[field].inputStatus === InputsStatusEnum.VERIFIED && <CheckMark/>}
+            {ResidenceInformationFormFields[field].inputStatus === InputsStatusEnum.VERIFIED && <CheckMark color={'#33CC66'} height={20} width={20}/>}
           </div>
         ))}
       </FlexWrapper>

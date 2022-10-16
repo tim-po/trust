@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect} from "react";
 import texts from './localization'
 import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
@@ -6,12 +6,11 @@ import styled from "styled-components";
 import Text from "components/Text";
 import {JustifyStartColumn, SpaceBetweenRow, Row} from "Standard/styles/GlobalStyledComponents";
 import TrustButton from "Standard/components/TrustButton";
-import Modal from 'Standard/components/Modal'
-import ChangeEmailModal from "components/Modals/ChangeEmail";
-import ChangePhoneModal from "components/Modals/ChangePhone";
-import ChangePasswordModal from "components/Modals/ChangePassword";
-import DeleteAccountModal from "components/Modals/DeleteAccount";
-import ChangeCommunicationMethodModal from "components/Modals/ChangeCommunicationMethod";
+import {useHistory} from "react-router-dom";
+import {RouteName} from "router";
+import {useUserAccountInfo} from "hooks/useUserAccountInfo";
+import {API_URL} from "api/constants";
+import NoPageError from "../../Standard/components/404";
 
 type AccountPropType = {}
 
@@ -69,99 +68,71 @@ const DangerZoneBlock = styled(JustifyStartColumn)`
 const Account = (props: AccountPropType) => {
   const {locale} = useContext(LocaleContext)
 
-  const [showEmailModal, setShowEmailModal] = useState(false)
-  const [showPhoneModal, setShowPhoneModal] = useState(false)
-  const [showPasswordModal, setShowPasswordModal] = useState(false)
-  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false)
-  const [showCommunicationMethodModal, setCommunicationMethodModal] = useState(false)
+  const {fetchUserAccountInfo, phone, email, communicationMethod, isServerError} = useUserAccountInfo(`${API_URL}/api/users/contacts`)
 
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [email, setEmail] = useState('mmpro@gmail.com')
+  const history = useHistory()
+
+  useEffect(() => {
+    fetchUserAccountInfo()
+  } , [])
 
   return (
-    <Container>
-      <Text fontWeight={600} fontSize={40}>{localized(texts.title, locale)}</Text>
-      <CardWrapper>
-        <ContactInformationBlock gap={16}>
-          <Text fontWeight={600} fontSize={20}>{localized(texts.contactInformation, locale)}</Text>
-          <SpaceBetweenRow>
-            <Text fontWeight={500} fontSize={16}>{localized(texts.email, locale)}</Text>
-            <Row gap={12}>
-              <Text fontWeight={400} fontSize={16}>{email}</Text>
-              <ChangeDataButton onClick={() => setShowEmailModal(true)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
+    <>
+      {isServerError && <NoPageError isServerError={isServerError}/>}
+      {!isServerError &&  <Container>
+        <Text fontWeight={600} fontSize={40}>{localized(texts.title, locale)}</Text>
+        <CardWrapper>
+          <ContactInformationBlock gap={16}>
+            <Text fontWeight={600} fontSize={20}>{localized(texts.contactInformation, locale)}</Text>
+            <SpaceBetweenRow>
+              <Text fontWeight={500} fontSize={16}>{localized(texts.email, locale)}</Text>
+              <Row gap={12}>
+                <Text fontWeight={400} fontSize={16}>{email}</Text>
+                <ChangeDataButton onClick={() => history.push(RouteName.CHANGE_EMAIL)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
+              </Row>
+            </SpaceBetweenRow>
+            <SpaceBetweenRow gap={16}>
+              <Text fontWeight={500} fontSize={16}>{localized(texts.phone, locale)}</Text>
+              <Row gap={12}>
+                <Text fontWeight={400} fontSize={16}>
+                  {phone ? phone : '-'}
+                </Text>
+                <ChangeDataButton onClick={() => history.push(RouteName.CHANGE_PHONE)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
+              </Row>
+            </SpaceBetweenRow>
+            <SpaceBetweenRow gap={16}>
+              <Text fontWeight={500} fontSize={16}>{localized(texts.communicationMethod, locale)}</Text>
+              <Row gap={12}>
+                <Text fontWeight={400} fontSize={16}>
+                  {communicationMethod ? communicationMethod.contact : '-'}
+                </Text>
+                <ChangeDataButton onClick={() => history.push(RouteName.CHANGE_COMMUNICATION_METHOD)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
+              </Row>
+            </SpaceBetweenRow>
+          </ContactInformationBlock>
+          <DangerZoneBlock gap={16}>
+            <Text fontWeight={600} fontSize={20}>{localized(texts.dangerZone, locale)}</Text>
+            <Row gap={8}>
+              <TrustButton
+                isValid
+                style='black'
+                rippleColor={'rgba(0, 0, 0, 0.2)'}
+                onClick={() => history.push(RouteName.CHANGE_PASSWORD)}
+              >
+                {localized(texts.changePasswordButton, locale)}
+              </TrustButton>
+              <TrustButton
+                isValid
+                style='red'
+                onClick={() => history.push(RouteName.DELETE_ACCOUNT)}
+              >
+                {localized(texts.deleteAccountButton, locale)}
+              </TrustButton>
             </Row>
-          </SpaceBetweenRow>
-          <SpaceBetweenRow gap={16}>
-            <Text fontWeight={500} fontSize={16}>{localized(texts.phone, locale)}</Text>
-            <Row gap={12}>
-              <Text fontWeight={400} fontSize={16}>
-                {phoneNumber ? phoneNumber : '-'}
-              </Text>
-              <ChangeDataButton onClick={() => setShowPhoneModal(true)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
-            </Row>
-          </SpaceBetweenRow>
-          <SpaceBetweenRow gap={16}>
-            <Text fontWeight={500} fontSize={16}>{localized(texts.communicationMethod, locale)}</Text>
-            <Row gap={12}>
-              <Text fontWeight={400} fontSize={16}>
-                {phoneNumber ? phoneNumber : '-'}
-              </Text>
-              <ChangeDataButton onClick={() => setCommunicationMethodModal(true)}>{localized(texts.changeButton, locale)}</ChangeDataButton>
-            </Row>
-          </SpaceBetweenRow>
-        </ContactInformationBlock>
-        <DangerZoneBlock gap={16}>
-          <Text fontWeight={600} fontSize={20}>{localized(texts.dangerZone, locale)}</Text>
-          <Row gap={8}>
-            <TrustButton
-              isValid
-              style='black'
-              rippleColor={'rgba(0, 0, 0, 0.2)'}
-              onClick={() => setShowPasswordModal(true)}
-            >
-              {localized(texts.changePasswordButton, locale)}
-            </TrustButton>
-            <TrustButton
-              isValid
-              style='red'
-              onClick={() => setShowDeleteAccountModal(true)}
-            >
-              {localized(texts.deleteAccountButton, locale)}
-            </TrustButton>
-          </Row>
-        </DangerZoneBlock>
-      </CardWrapper>
-      {
-        showEmailModal &&
-        <Modal title={'Change Email'} onClose={setShowEmailModal}>
-          <ChangeEmailModal />
-        </Modal>
-      }
-      {
-        showPhoneModal &&
-        <Modal title={'Change Phone'} onClose={setShowPhoneModal}>
-          <ChangePhoneModal />
-        </Modal>
-      }
-      {
-        showPasswordModal &&
-        <Modal title={'Change Password'} onClose={setShowPasswordModal}>
-          <ChangePasswordModal />
-        </Modal>
-      }
-      {
-        showDeleteAccountModal &&
-        <Modal title={'Delete account'} onClose={setShowDeleteAccountModal}>
-          <DeleteAccountModal />
-        </Modal>
-      }
-      {
-        showCommunicationMethodModal &&
-        <Modal title={'Change communication method'} onClose={setCommunicationMethodModal}>
-          <ChangeCommunicationMethodModal />
-        </Modal>
-      }
-    </Container>
+          </DangerZoneBlock>
+        </CardWrapper>
+      </Container>}
+    </>
   )
 };
 

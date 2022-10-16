@@ -52,7 +52,6 @@ const WalletVerification = (props: WalletVerificationPropType) => {
       isFirstRender,
       onChangeData
     )
-    //setWalletInner({data: {wallet, isBSCNetwork: checkboxChecked}, isValid: (checkboxChecked && transferAddressValid)});
   }, [wallet, transferAddressValid, checkboxChecked]);
 
   useEffect(() => {
@@ -74,7 +73,7 @@ const WalletVerification = (props: WalletVerificationPropType) => {
   };
 
   return (
-    <VerificationTile isValid={transferAddressValid && checkboxChecked}>
+    <VerificationTile>
       <Text fontSize={24} color={"#000"}>{localized(texts.tileTitle, locale)}</Text>
       <div className="flex">
         <SimpleLabelContainer>
@@ -95,7 +94,7 @@ const WalletVerification = (props: WalletVerificationPropType) => {
             }}
           />
         </SimpleLabelContainer>
-        {fieldStatus.wallet && fieldStatus.wallet.status === InputsStatusEnum.VERIFIED && <CheckMark/>}
+        {fieldStatus.wallet && fieldStatus.wallet.status === InputsStatusEnum.VERIFIED && <CheckMark color={'#33CC66'} height={20} width={20}/>}
       </div>
       <Checkbox
         onChange={onChange}

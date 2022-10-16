@@ -26,7 +26,7 @@ const FlexWrapper = styled.div`
   position: relative;
   margin-bottom: 90px;
   overflow: hidden;
-  width: 100vw;
+  width: 100%;
 `
 
 const TextFlexWrapper = styled.div`

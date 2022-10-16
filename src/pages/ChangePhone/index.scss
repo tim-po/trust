@@ -1,0 +1,25 @@
+.react-tel-input {
+  font-family: 'Gilroy', sans-serif;
+
+  .form-control {
+    padding: 10px 14px 10px 58px;
+    width: 100%;
+    border: 1px solid #a4a4a4;
+    border-radius: 10px;
+
+    &:hover {
+      border: 1px solid #04C35C;
+    }
+  }
+}
+
+.react-tel-input .form-control:focus {
+  border: 1px solid #04C35C;
+  box-shadow: none;
+}
+
+.react-tel-input .form-control.invalid-number:focus {
+  border: 1px solid #f44336;
+  box-shadow: none;
+}
+

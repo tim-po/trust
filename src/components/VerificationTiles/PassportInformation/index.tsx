@@ -69,7 +69,7 @@ const PassportInformation = (props: PassportInformationPropType) => {
   }, [seriesAndNumber, issuedBy, dateOfIssue, divisionCode, registration, seriesAndNumberValid, issuedByValid, dateOfIssueValid, divisionCodeValid, registrationValid]);
 
   return (
-    <VerificationTile isValid={seriesAndNumberValid && issuedByValid && dateOfIssueValid && divisionCodeValid && registrationValid}>
+    <VerificationTile>
       <form autoComplete={"on"}>
         <Text fontSize={24} color={"#000"}>Passport</Text>
         <div className={"mb-4"}/>

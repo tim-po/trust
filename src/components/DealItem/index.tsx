@@ -4,17 +4,22 @@ import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
 import './index.css'
 import styled from "styled-components";
-import {Row, SpaceBetweenRow, JustifyStartColumn, Column, AlignCenterRow} from "Standard/styles/GlobalStyledComponents";
+import { Row, SpaceBetweenRow, JustifyStartColumn, Column, AlignCenterRow } from "Standard/styles/GlobalStyledComponents";
 import Text from "Standard/components/Text";
 import TrustButton from "Standard/components/TrustButton";
 import ToggleDropdownButton from "icons/ToggleDropdownButton";
 import DownloadIcon from "icons/DownloadIcon";
+import {IOffer} from "types/Offer";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import {API_URL} from "../../api/constants";
+import {useCookies} from "react-cookie";
 
-type DealItemPropType = {}
+type DealItemPropType = {
+  offer: IOffer
+}
 
 const DealItemDefaultProps = {}
-
-const mockImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/800px-MetaMask_Fox.svg.png'
 
 const DealWrapper = styled(Column)`
   background: #fff;
@@ -56,9 +61,10 @@ const AnimatedLearnMoreButton = styled.div<{ isActive: boolean }>`
 `
 
 const CompanyDescriptionWrapper = styled(JustifyStartColumn)<{ isActive: boolean }>`
-  transition: all .6s;
+  transition: all .4s;
+  height: ${p => !p.isActive && '0px'};
+  transform: ${p => p.isActive ? 'scaleY(1)' : 'scaleY(0)'};
   overflow: ${p => p.isActive ? 'auto' : 'hidden'};
-  height: ${p => p.isActive ? '410px' : '0px'};
 `
 
 const CompanyDescription = styled(JustifyStartColumn)`
@@ -71,7 +77,7 @@ const CompanyPartners = styled(JustifyStartColumn)`
   border-bottom: 1px solid rgba(24, 24, 51, .1);
 `
 
-const CompanyPresentation = styled(JustifyStartColumn)`
+const CompanyPresentation = styled(AlignCenterRow)`
   padding: 21px 23px;
   border-bottom: 1px solid rgba(24, 24, 51, .1);
 `
@@ -90,6 +96,9 @@ const PresentationLink = styled.a`
 
 const DealItem = (props: DealItemPropType) => {
   const {locale} = useContext(LocaleContext)
+  const {offer} = props
+
+  const [cookies] = useCookies(['auth'])
 
   const [showFullDescription, setShowFullDescription] = useState(false)
 
@@ -97,64 +106,76 @@ const DealItem = (props: DealItemPropType) => {
     setShowFullDescription(!showFullDescription)
   }
 
+  const createDeal = async () => {
+    const createDealUrl = `${API_URL}/api/transaction/create`
+
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": cookies.auth
+      },
+      body: JSON.stringify({
+        investmentId: offer.id
+      })
+    }
+
+    fetch(createDealUrl, requestOptions)
+      .then(res => res.json())
+      .then(json => console.log(json))
+  }
+
   return (
     <DealWrapper>
       <DealHeader>
         <Row gap={9}>
-          <DealImage src={mockImage}/>
+          <DealImage src={`http://localhost:7002/investmentsStatic/${offer.logoPath}`}/>
           <JustifyStartColumn>
-            <Text fontWeight={600} fontSize={16}>Metamask</Text>
-            <Text fontWeight={500} fontSize={14}>Cryptocurrency wallet</Text>
+            <Text fontWeight={600} fontSize={16}>{offer.name}</Text>
+            <Text fontWeight={500} fontSize={14}>{offer.aboutSubtitle}</Text>
           </JustifyStartColumn>
         </Row>
         <Row gap={32}>
-          <DealDescriptionItem>
-            <Text fontWeight={500} fontSize={14}>Founded</Text>
-            <Text fontWeight={600} fontSize={16}>2008</Text>
-          </DealDescriptionItem>
-          <DealDescriptionItem>
-            <Text fontWeight={500} fontSize={14}>Total Funding</Text>
-            <Text fontWeight={600} fontSize={16}>$314B</Text>
-          </DealDescriptionItem>
-          <DealDescriptionItem>
-            <Text fontWeight={500} fontSize={14}>Headquarters</Text>
-            <Text fontWeight={600} fontSize={16}>Los Angeles CA, US</Text>
-          </DealDescriptionItem>
+          {offer.headerLabelFirst && offer.headerTextFirst &&
+            <DealDescriptionItem>
+              <Text fontWeight={500} fontSize={14}>{offer.headerLabelFirst}</Text>
+              <Text fontWeight={600} fontSize={16}>{offer.headerTextFirst}</Text>
+            </DealDescriptionItem>
+          }
+          {offer.headerLabelSecond && offer.headerTextSecond &&
+            <DealDescriptionItem>
+              <Text fontWeight={500} fontSize={14}>{offer.headerLabelSecond}</Text>
+              <Text fontWeight={600} fontSize={16}>{offer.headerTextSecond}</Text>
+            </DealDescriptionItem>
+          }
+          {offer.headerTextThird && offer.headerLabelThird &&
+            <DealDescriptionItem>
+              <Text fontWeight={500} fontSize={14}>{offer.headerLabelThird}</Text>
+              <Text fontWeight={600} fontSize={16}>{offer.headerTextThird}</Text>
+            </DealDescriptionItem>
+          }
         </Row>
         <ButtonWrapper>
-          <TrustButton style='green' isValid>
-            <Text fontWeight={600} fontSize={16} color={'#fff'}>Invest</Text>
-          </TrustButton>
+          {offer.isActive ?
+            <TrustButton style='green' isValid onClick={createDeal}>
+              <Text fontWeight={600} fontSize={16} color={'#fff'}>Invest</Text>
+            </TrustButton>
+            :
+            <Text fontWeight={500} fontSize={16} color={'#33CC66'}>Coming soon</Text>
+          }
         </ButtonWrapper>
       </DealHeader>
       <CompanyDescriptionWrapper isActive={showFullDescription}>
         <CompanyDescription>
-          <Text fontWeight={600} fontSize={18}>About Metamask</Text>
-          <Text fontWeight={400} fontSize={14}>A crypto wallet & gateway to blockchain apps</Text>
+          <Text fontWeight={600} fontSize={18}>About {offer.name}</Text>
+          <Text fontWeight={400} fontSize={14}>{offer.aboutSubtitle}</Text>
         </CompanyDescription>
-        <CompanyPartners gap={20}>
-          <JustifyStartColumn>
-            <Text fontWeight={500} fontSize={14}>Battery Ventures</Text>
-            <Text fontWeight={400} fontSize={14}>AppDynamics, Scopely, Dollar Shave Club, ServiceTitan, Cohesity, Niantic, 6sense, Nutanix, GrubMarket, StockX</Text>
-          </JustifyStartColumn>
-          <JustifyStartColumn>
-            <Text fontWeight={500} fontSize={14}>Bessemer Venture Partners</Text>
-            <Text fontWeight={400} fontSize={14}>PharmEasy, BigBasket, Swiggy, Pinterest, Snapdeal, Sila Nanotechnologies, ServiceTitan, Toast, Box, Procore Technologies</Text>
-          </JustifyStartColumn>
-          <JustifyStartColumn>
-            <Text fontWeight={500} fontSize={14}>Dragoneer Investment Group</Text>
-            <Text fontWeight={400} fontSize={14}>Flipkart, Spotify, Databricks, Airbnb, Instacart, Chime, DoorDash, UiPath, Nubank, Faire</Text>
-          </JustifyStartColumn>
+        <CompanyPartners>
+          <ReactMarkdown children={offer.description} rehypePlugins={[rehypeRaw]} />
         </CompanyPartners>
-        <CompanyPresentation>
-          <Text fontWeight={500} fontSize={16}>Presentations</Text>
-          <div className='mb-4' />
-          <JustifyStartColumn>
-            <AlignCenterRow gap={8}>
-              <DownloadIcon />
-              <PresentationLink>Metamask x MMP presentation.pdf</PresentationLink>
-            </AlignCenterRow>
-          </JustifyStartColumn>
+        <CompanyPresentation gap={10}>
+          <DownloadIcon/>
+          <PresentationLink href={`http://134.209.181.150:7002/investmentsStatic/${offer.presentationPath}`} target="_blank">{offer.presentationLabel}</PresentationLink>
         </CompanyPresentation>
       </CompanyDescriptionWrapper>
       <LearnMore onClick={toggleLearnMoreButton}>

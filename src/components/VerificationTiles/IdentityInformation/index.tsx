@@ -100,13 +100,6 @@ const IdentityInformation = (props: IdentityInformationPropType) => {
     }
   }, [isFirstRender])
 
-  // function setIdentityInformationInner(identityInformation: { data: {}, isValid: boolean }) {
-  //   if (!isFirstRender) {
-  //     localStorage.setItem('identityInformation', JSON.stringify(identityInformation.data))
-  //     onChangeData(identityInformation)
-  //   }
-  // }
-
   useEffect(() => {
     const identityInformation = localStorage.getItem("identityInformation");
     const parsed = JSON.parse(`${identityInformation}`)
@@ -140,19 +133,13 @@ const IdentityInformation = (props: IdentityInformationPropType) => {
       isFirstRender,
       onChangeData
     )
-    // setIdentityInformationInner(
-    //   {
-    //     data: {nationality, firstName, lastName, middleName, bDate},
-    //     isValid: firstNameValid && lastNameValid && nationalityValid && bDateValid
-    //   }
-    // );
   }, [nationality, firstName, lastName, middleName, bDate, firstNameValid, lastNameValid, nationalityValid, bDateValid]);
 
   useEffect(() => {
   }, [fieldsStatus])
 
   return (
-    <VerificationTile isValid={firstNameValid && lastNameValid && nationalityValid && bDateValid}>
+    <VerificationTile>
       <form autoComplete={"on"}>
         <Text fontSize={24} color={"#000"}>{localized(texts.tileTitle, locale)}</Text>
         <div className={"mb-4"}/>
@@ -186,7 +173,7 @@ const IdentityInformation = (props: IdentityInformationPropType) => {
                 className={`${isLoading && 'skeleton'}`}
               />
             </SimpleLabelContainer>
-            {fieldsStatus.nationality && fieldsStatus.nationality.status === InputsStatusEnum.VERIFIED && <CheckMark/>}
+            {fieldsStatus.nationality && fieldsStatus.nationality.status === InputsStatusEnum.VERIFIED && <CheckMark color={'#33CC66'} height={20} width={20}/>}
           </div>
           {Object.keys(IdentityInformationFormFields).map((field) => (
             <div className="flex" key={field}>
@@ -216,7 +203,7 @@ const IdentityInformation = (props: IdentityInformationPropType) => {
                   id={IdentityInformationFormFields[field].id}
                 />
               </SimpleLabelContainer>
-              {IdentityInformationFormFields[field].inputStatus === InputsStatusEnum.VERIFIED && <CheckMark/>}
+              {IdentityInformationFormFields[field].inputStatus === InputsStatusEnum.VERIFIED && <CheckMark color={'#33CC66'} height={20} width={20}/>}
             </div>
           ))}
           <div className="flex">
@@ -243,7 +230,7 @@ const IdentityInformation = (props: IdentityInformationPropType) => {
                 className={`${isLoading && 'skeleton'}`}
               />
             </SimpleLabelContainer>
-            {fieldsStatus.bDate && fieldsStatus.bDate.status === InputsStatusEnum.VERIFIED && <CheckMark/>}
+            {fieldsStatus.bDate && fieldsStatus.bDate.status === InputsStatusEnum.VERIFIED && <CheckMark color={'#33CC66'} height={20} width={20}/>}
           </div>
         </FlexWrapper>
       </form>

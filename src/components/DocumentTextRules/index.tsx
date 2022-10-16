@@ -37,25 +37,25 @@ const DocumentTextRules = (props: DocumentTextRulesPropType) => {
     <RulesContainer>
       <FlexRuleWrapper>
         <IconWrapper height={24} width={24}>
-          <CheckMark/>
+          <CheckMark color={'#33CC66'} height={20} width={20}/>
         </IconWrapper>
         <Text fontSize={12} fontWeight={500} color={'#6C6C6C'}>{localized(texts.governmentIssued, locale)}</Text>
       </FlexRuleWrapper>
       <FlexRuleWrapper>
         <IconWrapper height={24} width={24}>
-          <CheckMark/>
+          <CheckMark color={'#33CC66'} height={20} width={20}/>
         </IconWrapper>
         <Text fontSize={12} fontWeight={500} color={'#6C6C6C'}>{localized(texts.originalFullSize, locale)}</Text>
       </FlexRuleWrapper>
       <FlexRuleWrapper>
         <IconWrapper height={24} width={24}>
-          <CheckMark/>
+          <CheckMark color={'#33CC66'} height={20} width={20}/>
         </IconWrapper>
         <Text fontSize={12} fontWeight={500} color={'#6C6C6C'}>{localized(texts.background, locale)}</Text>
       </FlexRuleWrapper>
       <FlexRuleWrapper>
         <IconWrapper height={24} width={24}>
-          <CheckMark/>
+          <CheckMark color={'#33CC66'} height={20} width={20}/>
         </IconWrapper>
         <Text fontSize={12} fontWeight={500} color={'#6C6C6C'}>{localized(texts.readable, locale)}</Text>
       </FlexRuleWrapper>

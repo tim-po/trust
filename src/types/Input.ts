@@ -14,7 +14,7 @@ export type AllFieldsDict = {
       en: string,
       ja: string
     },
-    inputStatus: InputsStatusEnum,
+    inputStatus: InputsStatusEnum | InputsStatusEnum.DEFAULT,
     value: string,
     isValid: boolean,
     onChange: (newState: string) => void

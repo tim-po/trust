@@ -1,23 +1,23 @@
 import React, {useContext, useEffect, useState} from "react";
 import texts from "./localization";
-import LocaleContext from "../../Standard/LocaleContext";
-import {localized} from "../../Standard/utils/localized";
+import LocaleContext from "Standard/LocaleContext";
+import {localized} from "Standard/utils/localized";
 import styled from "styled-components";
 import {Link} from "react-router-dom";
-import {RouteName} from "../../router";
+import {RouteName} from "router";
 import sha256 from "crypto-js/sha256";
-import {API_URL} from "../../api/constants";
-import useValidatedState, {validationFuncs} from "../../Standard/hooks/useValidatedState";
+import {API_URL} from "api/constants";
+import useValidatedState, {validationFuncs} from "Standard/hooks/useValidatedState";
 import ErrorMessage from "../../components/ErrorMessage";
-import {useHistory} from "react-router-dom";
-import Spinner from "../../Standard/components/Spinner";
-import SimpleInput from "../../Standard/components/SimpleInput";
-import SimpleLabelContainer from "../../Standard/components/SimpleLabelContainer";
-import {useCookies} from "react-cookie";
-import LogAndRegFormWrapper from "../../components/LogAndRegFormWrapper";
-import Button from '../../Standard/components/ButtonV2';
-import ShowAndHidePassword from "../../components/ShowAndHidePassword";
+import Spinner from "Standard/components/Spinner";
+import SimpleInput from "Standard/components/SimpleInput";
+import SimpleLabelContainer from "Standard/components/SimpleLabelContainer";
+import LogAndRegFormWrapper from "components/LogAndRegFormWrapper";
+import ShowAndHidePassword from "components/ShowAndHidePassword";
 import TwoFA from "../TwoFA";
+import TrustButton from "Standard/components/TrustButton";
+import {AnimatedWrapper} from "styles/StyledComponents";
+import usePrevious from "Standard/hooks/usePrevious";
 
 type RegistrationPropType = {}
 
@@ -65,21 +65,18 @@ const Registration = (props: RegistrationPropType) => {
   const [[email, setEmail], emailValid] = useValidatedState<string>("", validationFuncs.isEmail);
   const [[password, setPassword], passwordValid] = useValidatedState<string>("", validationFuncs.validPassword);
   const [[repeatedPassword, setRepeatPassword], repeatedPasswordValid] = useValidatedState<string>("", newValue => newValue === password);
-  const [[code, setCode], codeValid] = useValidatedState<string>("", validationFuncs.hasValue);
-
-  const [cookies, setCookie] = useCookies(["auth"]);
 
   const [isWaitingForCode, setIsWaitingForCode] = useState(false)
-
-  const history = useHistory();
-
-  const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [incorrectCodeError, setIncorrectCodeError] = useState()
 
   const [passwordType, setPasswordType] = useState<"text" | "password">("password")
   const [repeatPasswordType, setRepeatPasswordType] = useState<"text" | "password">("password")
+
+  const [isServerError, setIsServerError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const prevEmailRef = usePrevious(email)
+  const prevPasswordRef = usePrevious(password)
 
   const isValid = emailValid && repeatedPasswordValid && passwordValid;
 
@@ -105,7 +102,7 @@ const Registration = (props: RegistrationPropType) => {
         if (json.statusCode === 200 || json.statusMessage === 201) {
           setIsWaitingForCode(true)
         } else {
-          setIsError(true)
+          setIsServerError(true)
           setErrorMessage(json.message)
         }
       })
@@ -113,38 +110,11 @@ const Registration = (props: RegistrationPropType) => {
       .finally(() => setIsLoading(false))
   }
 
-  async function sendCode() {
-
-    if (!codeValid) return
-
-    const TwoFAUrl = `${API_URL}/api/auth/registration/code`;
-    const requestOptions = {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        login: email,
-        recoveryCode: +code
-      })
-    };
-
-    fetch(TwoFAUrl, requestOptions)
-      .then(res => res.json())
-      .then(json => {
-        if (json.statusCode === 200 || json.statusCode === 201) {
-          setCookie("auth", json.token, {path: window.location.pathname});
-          history.push(RouteName.VERIFICATION);
-        } else {
-          setIncorrectCodeError(json.message)
-        }
-      })
-  }
-
   useEffect(() => {
-    if (isWaitingForCode && code.length === 4) {
-      sendCode()
+    if (isServerError && (prevEmailRef !== email || prevPasswordRef !== password)) {
+      setIsServerError(false)
     }
-  }, [isWaitingForCode, code])
-
+  }, [isServerError, email, password])
 
   return (
     <LoginPageContainer>
@@ -199,10 +169,14 @@ const Registration = (props: RegistrationPropType) => {
             onChangeRaw={setRepeatPassword}
           />
         </SimpleLabelContainer>
-
-        {isError && <ErrorMessage message={errorMessage} />}
-
-        <Button
+        <AnimatedWrapper isActive={isServerError}>
+          {
+            isServerError &&
+            <ErrorMessage message={errorMessage} title={'Registration error'}/>
+          }
+        </AnimatedWrapper>
+        <TrustButton
+          style='green'
           isValid={isValid}
           onClick={setNewUser}
         >
@@ -212,13 +186,22 @@ const Registration = (props: RegistrationPropType) => {
               :
               `${localized(texts.buttonText, locale)}`
           }
-        </Button>
+        </TrustButton>
         <FlexLinksWrapper>
           <GrayText>{localized(texts.alreadyRegistered, locale)}</GrayText>
           <TextLink to={RouteName.LOGIN}>{localized(texts.signIn, locale)}</TextLink>
         </FlexLinksWrapper>
       </LogAndRegFormWrapper>}
-      {isWaitingForCode && <TwoFA otpCode={code} setOptCode={setCode} serverErrorMessage={incorrectCodeError} setIsWaitingForCode={setIsWaitingForCode}/>}
+      {
+        isWaitingForCode &&
+        <TwoFA
+          email={email}
+          setIsWaitingForCode={setIsWaitingForCode}
+          isWaitingForCode={isWaitingForCode}
+          serverUrl={`${API_URL}/api/auth/registration/code`}
+          appUrl={RouteName.VERIFICATION}
+        />
+      }
     </LoginPageContainer>
   );
 };

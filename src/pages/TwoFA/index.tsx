@@ -1,17 +1,22 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import texts from "./localization";
-import OtpInput from "../../Standard/components/OTPInput";
-import LocaleContext from "../../Standard/LocaleContext";
-import Text from "../../components/Text";
+import OtpInput from "Standard/components/OTPInput";
+import LocaleContext from "Standard/LocaleContext";
+import Text from "components/Text";
 import styled from "styled-components";
-import {localized} from "../../Standard/utils/localized";
-import ErrorMessage from "../../components/ErrorMessage";
+import {localized} from "Standard/utils/localized";
+import ErrorMessage from "components/ErrorMessage";
+import {useHistory} from "react-router-dom";
+import useValidatedState, {validationFuncs} from "Standard/hooks/useValidatedState";
+import {useSendCode} from "hooks/useSendCode";
+import {RouteName} from "router";
 
 type TwoFAPropType = {
-  otpCode: string;
-  setOptCode: (value: string) => void;
-  serverErrorMessage: string | undefined,
-  setIsWaitingForCode: (value: boolean) => void
+  setIsWaitingForCode: (value: boolean) => void,
+  appUrl?: string,
+  isWaitingForCode: boolean
+  email: string,
+  serverUrl: string
 }
 
 const TwoFADefaultProps = {};
@@ -53,9 +58,41 @@ const ReturnButton = styled.div`
 const TwoFA = (props: TwoFAPropType) => {
   const {locale} = useContext(LocaleContext);
 
-  const {otpCode, setOptCode, serverErrorMessage, setIsWaitingForCode} = props
+  const {setIsWaitingForCode, appUrl, isWaitingForCode, email, serverUrl} = props
 
-  const onChange = (value: string) => setOptCode(value);
+  const [[code, setCode], codeValid] = useValidatedState<string>("", validationFuncs.hasValue);
+
+  const history = useHistory()
+
+  const handleReturnButtonClick = () => {
+    setIsWaitingForCode(false)
+    setCode("")
+
+    if (appUrl) {
+      history.push(appUrl)
+    }
+  }
+
+  const {fetchCode, incorrectCodeError} = useSendCode(
+    {
+      login: email,
+      mfaCode: +code
+    },
+    serverUrl,
+    appUrl
+  )
+
+  async function sendCode() {
+    if (!codeValid) return
+    fetchCode()
+  }
+
+  useEffect(() => {
+    if (isWaitingForCode && code.length === 4) {
+      sendCode()
+    }
+  }, [isWaitingForCode, code])
+
 
   return (
     <Container>
@@ -64,16 +101,13 @@ const TwoFA = (props: TwoFAPropType) => {
           <Text fontWeight={600} fontSize={25}>Two-Factor Authentication - 2FA</Text>
           <Text fontWeight={400} fontSize={16} marginBottom={25}>{localized(texts.messageSend, locale)}</Text>
         </TextWrapper>
-        <OtpInput value={otpCode} valueLength={4} onChange={onChange}/>
-        <ReturnButton onClick={() => {
-          setIsWaitingForCode(false)
-          setOptCode("")
-        }}>{localized(texts.cancel, locale)}</ReturnButton>
+        <OtpInput value={code} valueLength={4} onChange={setCode}/>
+        <ReturnButton onClick={handleReturnButtonClick}>{localized(texts.cancel, locale)}</ReturnButton>
       </TwoFAContainer>
       {
-        serverErrorMessage &&
+        incorrectCodeError &&
         <ErrorMessage
-          message={serverErrorMessage}
+          message={incorrectCodeError}
           title={localized(texts.error2FA, locale)}
         />
       }

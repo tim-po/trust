@@ -17,7 +17,8 @@ import Info from "icons/Info/index";
 import {useCookies} from "react-cookie";
 import ForceValidateContext from "Standard/ForceValidateContext";
 import Disk from 'icons/Disk';
-import TrustButton from "../../Standard/components/TrustButton";
+import TrustButton from "Standard/components/TrustButton";
+import NoPageError from "Standard/components/404";
 
 type VerificationPropType = {}
 
@@ -119,10 +120,10 @@ const Verification = (props: VerificationPropType) => {
   }, validationFuncs.controlled);
 
   const [countries, setCountries] = useState<Country[]>([]);
-  const [countriesError, setCountriesError] = useState(false);
+  const [isCountriesError, setIsCountriesError] = useState(false);
 
   const [userData, setUserData] = useState<UserData | undefined>(undefined)
-  const [userDataError, setUserDataError] = useState(false)
+  const [isUserDataError, setIsUserDataError] = useState(false)
 
   const [isDocumentsError, setIsDocumentsError] = useState(false)
 
@@ -131,6 +132,7 @@ const Verification = (props: VerificationPropType) => {
 
   const [isUserVerified, setIsUserVerified] = useState(false)
   const [isUserSubmitted, setIsUserSubmitted] = useState(false)
+  const [isUserStatusError, setIsUserStatusError] = useState(false)
 
   const [cookies] = useCookies(["auth"]);
 
@@ -139,6 +141,8 @@ const Verification = (props: VerificationPropType) => {
     identityInformationValid &&
     residenceValid &&
     walletValid;
+
+  const isServerError = isUserStatusError || isUserDataError || isDocumentsError
 
   const getCountries = () => {
     const registrationUrl = `${API_URL}/api/countries`;
@@ -150,7 +154,7 @@ const Verification = (props: VerificationPropType) => {
     fetch(registrationUrl, requestOptions)
       .then(res => res.json())
       .then(countries => setCountries(countries))
-      .catch((e) => console.log(e))
+      .catch((e) => setIsCountriesError(true))
   };
 
   async function sendUserData() {
@@ -185,7 +189,8 @@ const Verification = (props: VerificationPropType) => {
         if (json.statusCode === 200) {
           getUserData()
         }
-      });
+      })
+      .catch(e => console.log(e));
   }
 
   async function getUserData() {
@@ -203,31 +208,35 @@ const Verification = (props: VerificationPropType) => {
     fetch(userDataUrl, requestOptions)
       .then(res => res.json())
       .then(userData => {
-        if (Object.keys(userData).length) {
+        if (userData.statusCode === 200) {
           setUserData(userData)
-          localStorage.setItem("identityInformation", JSON.stringify({
-            nationality: userData.nationality.value,
-            firstName: userData.firstName.value,
-            middleName: userData.middleName.value,
-            lastName: userData.lastName.value,
-            bDate: userData.bDate.value
-          }));
-          localStorage.setItem("residence", JSON.stringify({
-            country: userData.country.value,
-            city: userData.city.value,
-            zip: userData.zip.value,
-            mainStreet: userData.mainStreet.value,
-            additionalStreet: userData.additionalStreet.value,
-            region: userData.region.value
-          }));
-          localStorage.setItem("wallet", JSON.stringify({
-            wallet: userData.wallet.value,
-            isBSCNetwork: !!userData.wallet.value
-          }));
+          if (isUserSubmitted) {
+            localStorage.setItem("identityInformation", JSON.stringify({
+              nationality: userData.nationality.value,
+              firstName: userData.firstName.value,
+              middleName: userData.middleName.value,
+              lastName: userData.lastName.value,
+              bDate: userData.bDate.value
+            }));
+            localStorage.setItem("residence", JSON.stringify({
+              country: userData.country.value,
+              city: userData.city.value,
+              zip: userData.zip.value,
+              mainStreet: userData.mainStreet.value,
+              additionalStreet: userData.additionalStreet.value,
+              region: userData.region.value
+            }));
+            localStorage.setItem("wallet", JSON.stringify({
+              wallet: userData.wallets.main.value,
+              isBSCNetwork: !!userData.wallet.value
+            }));
+          }
+        } else {
+          setIsUserDataError(true)
         }
-        setIsLoading(false)
       })
       .catch((e) => console.log(''))
+      .finally(() => setIsLoading(false))
   }
 
   async function getStatusOfUser() {
@@ -244,8 +253,12 @@ const Verification = (props: VerificationPropType) => {
     fetch(userStatusUrl, requestOptions)
       .then(res => res.json())
       .then(json => {
-        setIsUserVerified(json.isVerified);
-        setIsUserSubmitted(json.isSubmitted)
+        if (json.statusCode === 200) {
+          setIsUserVerified(json.isVerified);
+          setIsUserSubmitted(json.isSubmitted)
+        } else {
+          setIsUserStatusError(true)
+        }
       })
       .catch(e => {
       })
@@ -258,109 +271,113 @@ const Verification = (props: VerificationPropType) => {
   }, []);
 
   return (
-    <ForceValidateContext.Provider value={{setForceValidate: setIsForceValid, forceValidate: isForceValid}}>
-      <VerificationPageContainer>
-        <Text fontWeight={600} fontSize={40}>{localized(texts.pageTitle, locale)}</Text>
-        {isUserSubmitted && <Text fontWeight={400} fontSize={20}>{localized(texts.buttonTextCheck, locale)}</Text>}
-        <FormWrapper>
-          <PaddingWrapper>
-            {isUserVerified ?
-              <Text
-                fontWeight={600}
-                fontSize={24}
-                color={'#33CC66'}
-                marginBottom={12}
-              >
-                {localized(texts.documentsWarning, locale)}
-              </Text>
-              :
-              <FlexStartWrapper>
-                <IconWrapper width={30} height={30}>
-                  <Info/>
+    <>
+      {isServerError && <NoPageError isServerError={isServerError}/>}
+      {!isServerError &&
+        <ForceValidateContext.Provider value={{setForceValidate: setIsForceValid, forceValidate: isForceValid}}>
+          <VerificationPageContainer>
+            <Text fontWeight={600} fontSize={40}>{localized(texts.pageTitle, locale)}</Text>
+            {isUserSubmitted && <Text fontWeight={400} fontSize={20}>{localized(texts.buttonTextCheck, locale)}</Text>}
+            <FormWrapper>
+              <PaddingWrapper>
+                {isUserVerified ?
+                  <Text
+                    fontWeight={600}
+                    fontSize={24}
+                    color={'#33CC66'}
+                    marginBottom={12}
+                  >
+                    {localized(texts.documentsWarning, locale)}
+                  </Text>
+                  :
+                  <FlexStartWrapper>
+                    <IconWrapper width={30} height={30}>
+                      <Info/>
+                    </IconWrapper>
+                    <FlexColumnWrapper>
+                      <Text fontWeight={600} fontSize={24} color={'#33CC66'}
+                            marginBottom={12} adaptiveFontWeight={16}>{localized(texts.documentsWarning, locale)}</Text>
+                      <Text fontWeight={600} fontSize={16}
+                            color={'#181833'} adaptiveFontWeight={12}>{localized(texts.noChangeWarning, locale)}</Text>
+                    </FlexColumnWrapper>
+                  </FlexStartWrapper>
+                }
+              </PaddingWrapper>
+              <SaveDataInfoBlock>
+                <IconWrapper width={20} height={20}>
+                  <Disk/>
                 </IconWrapper>
-                <FlexColumnWrapper>
-                  <Text fontWeight={600} fontSize={24} color={'#33CC66'}
-                        marginBottom={12} adaptiveFontWeight={16}>{localized(texts.documentsWarning, locale)}</Text>
-                  <Text fontWeight={600} fontSize={16}
-                        color={'#181833'} adaptiveFontWeight={12}>{localized(texts.noChangeWarning, locale)}</Text>
-                </FlexColumnWrapper>
-              </FlexStartWrapper>
-            }
-          </PaddingWrapper>
-          <SaveDataInfoBlock>
-            <IconWrapper width={20} height={20}>
-              <Disk/>
-            </IconWrapper>
-            <Text fontWeight={600} fontSize={14} color={'#fff'}
-                  adaptiveFontWeight={12}>{localized(texts.automaticallySave, locale)}</Text>
-          </SaveDataInfoBlock>
-          <PaddingWrapper>
-            <Wallet
-              onChangeData={setWallet}
-              fieldStatus={{
-                wallet: userData?.wallet
-              }}
-              isLoading={isLoading}
-            />
-            <IdentityInformation
-              countries={countries}
-              onChangeData={setIdentityInformation}
-              fieldsStatus={{
-                firstName: userData?.firstName,
-                lastName: userData?.lastName,
-                middleName: userData?.middleName,
-                bDate: userData?.bDate,
-                nationality: userData?.nationality,
-              }}
-              isLoading={isLoading}
-            />
-            <Residence
-              countries={countries}
-              onChangeData={setResidence}
-              fieldsStatus={{
-                mainStreet: userData?.mainStreet,
-                additionalStreet: userData?.additionalStreet,
-                region: userData?.region,
-                city: userData?.city,
-                country: userData?.country,
-                zip: userData?.zip
-              }}
-              isLoading={isLoading}
-            />
-            <Documents
-              documentsStatus={{
-                mainDocument: userData?.mainDocument,
-                additionalDocument: userData?.additionalDocument
-              }}
-              onChangeData={setDocuments}
-              isSubmitted={isUserSubmitted}
-              isLoading={isLoading}
-              setIsDocumentsError={setIsDocumentsError}
-            />
-            <FlexStartWrapper>
-              <IconWrapper width={20} height={20}>
-                <VerificationIcon/>
-              </IconWrapper>
-              <Text fontSize={16} fontWeight={500} adaptiveFontWeight={14}
-                    color={'#33CC66'}>{localized(texts.termOfUse, locale)}</Text>
-            </FlexStartWrapper>
-            <div className='mb-4'/>
-            {!isUserVerified &&
-              <ButtonWrapper>
-                <TrustButton
-                  style='green'
-                  isValid={isValid}
-                  onClick={isUserSubmitted ? () => {
-                  } : sendUserData}
-                >
-                  {localized(texts.buttonTextVerify, locale)}
-                </TrustButton>
-              </ButtonWrapper>
-            }
-          </PaddingWrapper>
-        </FormWrapper>
-      </VerificationPageContainer>
-    </ForceValidateContext.Provider>
+                <Text fontWeight={600} fontSize={14} color={'#fff'}
+                      adaptiveFontWeight={12}>{localized(texts.automaticallySave, locale)}</Text>
+              </SaveDataInfoBlock>
+              <PaddingWrapper>
+                <Wallet
+                  onChangeData={setWallet}
+                  fieldStatus={{
+                    wallet: userData?.wallets.main
+                  }}
+                  isLoading={isLoading}
+                />
+                <IdentityInformation
+                  countries={countries}
+                  onChangeData={setIdentityInformation}
+                  fieldsStatus={{
+                    firstName: userData?.firstName,
+                    lastName: userData?.lastName,
+                    middleName: userData?.middleName,
+                    bDate: userData?.bDate,
+                    nationality: userData?.nationality,
+                  }}
+                  isLoading={isLoading}
+                />
+                <Residence
+                  countries={countries}
+                  onChangeData={setResidence}
+                  fieldsStatus={{
+                    mainStreet: userData?.mainStreet,
+                    additionalStreet: userData?.additionalStreet,
+                    region: userData?.region,
+                    city: userData?.city,
+                    country: userData?.country,
+                    zip: userData?.zip
+                  }}
+                  isLoading={isLoading}
+                />
+                <Documents
+                  documentsStatus={{
+                    mainDocument: userData?.mainDocument,
+                    additionalDocument: userData?.additionalDocument
+                  }}
+                  onChangeData={setDocuments}
+                  isSubmitted={isUserSubmitted}
+                  isLoading={isLoading}
+                  setIsDocumentsError={setIsDocumentsError}
+                />
+                <FlexStartWrapper>
+                  <IconWrapper width={20} height={20}>
+                    <VerificationIcon/>
+                  </IconWrapper>
+                  <Text fontSize={16} fontWeight={500} adaptiveFontWeight={14}
+                        color={'#33CC66'}>{localized(texts.termOfUse, locale)}</Text>
+                </FlexStartWrapper>
+                <div className='mb-4'/>
+                {!isUserVerified &&
+                  <ButtonWrapper>
+                    <TrustButton
+                      style='green'
+                      isValid={isValid}
+                      onClick={isUserSubmitted ? () => {
+                      } : sendUserData}
+                    >
+                      {localized(texts.buttonTextVerify, locale)}
+                    </TrustButton>
+                  </ButtonWrapper>
+                }
+              </PaddingWrapper>
+            </FormWrapper>
+          </VerificationPageContainer>
+        </ForceValidateContext.Provider>}
+    </>
   );
 };
 

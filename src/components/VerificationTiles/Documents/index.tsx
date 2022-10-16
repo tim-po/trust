@@ -19,8 +19,8 @@ type DocumentsPropType = {
   onChangeData: (data: any) => void
   isSubmitted: boolean,
   documentsStatus: {
-    mainDocument: FieldStatus | undefined,
-    additionalDocument: FieldStatus | undefined,
+    mainDocument: { token: string, status: string } | undefined,
+    additionalDocument: { token: string, status: string } | undefined,
   },
   isLoading: boolean,
   setIsDocumentsError: (value: boolean) => void
@@ -67,6 +67,7 @@ const BlurSquare = styled.div`
 const Documents = (props: DocumentsPropType) => {
   const {locale} = useContext(LocaleContext)
   const ref = useRef()
+
   const {onChangeData, isSubmitted, documentsStatus, isLoading, setIsDocumentsError} = props
   const [activeButton, setActiveButton] = useState<number>(0)
 
@@ -75,11 +76,15 @@ const Documents = (props: DocumentsPropType) => {
   const [mainDoc, setMainDoc] = useState<any>(undefined)
   const [additionalDoc, setAdditionalDoc] = useState<any>(undefined)
 
-  const [token, setToken] = useState(undefined)
+  const [mainToken, setMainToken] = useState(undefined)
+  const [additionalToken, setAdditionalToken] = useState(undefined)
 
   const [cookies] = useCookies(['auth']);
 
-  const isValid = mainDoc !== "" && additionalDoc !== ""
+  const isValid =
+    (documentsStatus.mainDocument?.token !== '' || mainToken !== '')
+    &&
+    (documentsStatus.additionalDocument?.token !== '' || additionalToken !== '')
 
   async function getUserToken(body: FormData) {
     const userTokenUrl = `${API_URL}/api/images/upload`;
@@ -107,11 +112,11 @@ const Documents = (props: DocumentsPropType) => {
 
     switch (documentImportantType) {
       case "additional":
-        if (token)
-          body.append('token', token);
+        if (additionalToken)
+          body.append('token', additionalToken);
       case "main":
-        if (token)
-          body.append('token', token);
+        if (mainToken)
+          body.append('token', mainToken);
     }
 
     const response = await getUserToken(body)
@@ -125,7 +130,7 @@ const Documents = (props: DocumentsPropType) => {
       // @ts-ignore
       uploadFiles('main', event.target.files[0]).then(token => {
         setMainDoc(`${API_URL}/api/images/main/${cookies.auth}?${new Date().getTime()}`)
-        setToken(token)
+        setMainToken(token)
       })
     }
   }
@@ -135,7 +140,7 @@ const Documents = (props: DocumentsPropType) => {
       // @ts-ignore
       uploadFiles('additional', event.target.files[0]).then(token => {
         setAdditionalDoc(`${API_URL}/api/images/additional/${cookies.auth}?${new Date().getTime()}`)
-        setToken(token)
+        setAdditionalToken(token)
       })
     }
   }
@@ -156,13 +161,18 @@ const Documents = (props: DocumentsPropType) => {
 
   useEffect(() => {
     setDocumentsInner({
-      data: {token, type: "Passport"},
+      data: {
+        token: {
+          main: mainToken ? mainToken : documentsStatus.mainDocument?.token,
+          additional: additionalToken ? additionalToken : documentsStatus.additionalDocument?.token
+        }
+      },
       isValid
     });
-  }, [mainDoc, additionalDoc, token, activeButton, isValid]);
+  }, [documentsStatus.mainDocument?.token, documentsStatus.additionalDocument?.token, isValid, mainToken, additionalToken]);
 
   return (
-    <VerificationTile isValid={isValid}>
+    <VerificationTile>
       <Text fontSize={24} color={'#000'}>{localized(texts.tileTitle, locale)}</Text>
       <DocumentRulesGallery/>
       <DocumentTextRules/>
@@ -171,13 +181,14 @@ const Documents = (props: DocumentsPropType) => {
           {(documentsStatus.mainDocument?.status === InputsStatusEnum.VERIFIED || documentsStatus.mainDocument?.status === InputsStatusEnum.PROCESSING_BY_ADMIN)
             &&
             <BlurSquare>
-              {documentsStatus.mainDocument?.status === InputsStatusEnum.VERIFIED && <CheckMark/>}
+              {documentsStatus.mainDocument?.status === InputsStatusEnum.VERIFIED &&
+                <CheckMark color={'#33CC66'} height={20} width={20}/>}
             </BlurSquare>
           }
           <label className="file-select">
             <div className="select-button">
               {
-                (mainDoc || (documentsStatus.mainDocument?.status === InputsStatusEnum.VERIFIED || documentsStatus.mainDocument?.status === InputsStatusEnum.PROCESSING_BY_ADMIN))
+                (documentsStatus.mainDocument?.token || mainToken)
                   ?
                   <img src={mainDoc} alt="preview image"/>
                   :
@@ -194,13 +205,14 @@ const Documents = (props: DocumentsPropType) => {
           {(documentsStatus.additionalDocument?.status === InputsStatusEnum.VERIFIED || documentsStatus.additionalDocument?.status === InputsStatusEnum.PROCESSING_BY_ADMIN)
             &&
             <BlurSquare>
-              {documentsStatus.additionalDocument?.status === InputsStatusEnum.VERIFIED && <CheckMark/>}
+              {documentsStatus.additionalDocument?.status === InputsStatusEnum.VERIFIED &&
+                <CheckMark color={'#33CC66'} height={20} width={20}/>}
             </BlurSquare>
           }
           <label className="file-select">
             <div className="select-button">
               {
-                (additionalDoc || (documentsStatus.additionalDocument?.status === InputsStatusEnum.VERIFIED || documentsStatus.additionalDocument?.status === InputsStatusEnum.PROCESSING_BY_ADMIN))
+                (documentsStatus.additionalDocument?.token || additionalToken)
                   ?
                   <img src={additionalDoc} alt="preview image"/>
                   :
