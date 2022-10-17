@@ -39,6 +39,7 @@ const DealHeader = styled(SpaceBetweenRow)`
 const DealImage = styled.img`
   width: 50px;
   height: 50px;
+  border-radius: 16px;
 `
 
 const DealDescriptionItem = styled(JustifyStartColumn)`
@@ -137,7 +138,7 @@ const DealItem = (props: DealItemPropType) => {
     <DealWrapper>
       <DealHeader>
         <Row gap={9}>
-          <DealImage src={`http://localhost:7002/investmentsStatic/${offer.logoPath}`}/>
+          <DealImage src={`${API_URL}/dist/investmentsStatic/${offer.logoPath}`.replaceAll(' ', '%20')}/>
           <JustifyStartColumn>
             <Text fontWeight={600} fontSize={16}>{offer.name}</Text>
             <Text fontWeight={500} fontSize={14}>{offer.aboutSubtitle}</Text>
@@ -183,7 +184,7 @@ const DealItem = (props: DealItemPropType) => {
         </CompanyPartners>
         <CompanyPresentation gap={10}>
           <DownloadIcon/>
-          <PresentationLink href={`http://134.209.181.150:7002/investmentsStatic/${offer.presentationPath}`} target="_blank">{offer.presentationLabel}</PresentationLink>
+          <PresentationLink href={`${API_URL}/dist/investmentsStatic/${offer.presentationPath}`.replaceAll(' ', '%20')} target="_blank">{offer.presentationLabel}</PresentationLink>
         </CompanyPresentation>
       </CompanyDescriptionWrapper>
       <LearnMore onClick={toggleLearnMoreButton}>

@@ -29,10 +29,18 @@ export type Step = {
   component: (status: IDealStepStatus, action: IDealActions, adminErrorMessage?: string) => React.ReactNode,
 }
 
+export const StageToTitleMapping: {[key: string]: string} = {
+  'initial': 'Configure initial deal',
+  'kyc': 'Confirm KYC',
+  'documents': 'Sign necessary documents',
+  'deposit': 'Deposit Funds',
+  'closed': 'Closed'
+}
+
 export type IDeal =  {
   adminErrorMessage: string;
   desiredInvestmentAmount: number;
-  investment: {subtitle: string, logo: string, name: string}
+  investment: {aboutSubtitle: string, logoPath: string, name: string}
   documents: string;
   fundsDeposited: null | boolean;
   investmentId: string;

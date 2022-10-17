@@ -9,22 +9,21 @@ import IosStyleSegmentedControll from "../../Standard/components/IosStyleSegment
 import {
   JustifyStartColumn,
   StartRow,
-  JustifyCenterColumn
+  JustifyCenterColumn,
+  Row,
 } from "../../Standard/styles/GlobalStyledComponents";
 import Text from "../../Standard/components/Text";
 import {useHistory} from "react-router-dom";
 import {RouteName} from "../../router";
 import {API_URL} from "../../api/constants";
 import {useCookies} from "react-cookie";
-import {IDeal} from "../../types/ManageStatus";
+import {IDeal, StageToTitleMapping} from "../../types/ManageStatus";
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from "rehype-raw";;
 
 type DealsPropType = {}
 
 const AllDealsDefaultProps = {}
-
-const mockImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/800px-MetaMask_Fox.svg.png'
 
 const Container = styled.div`
   display: flex;
@@ -34,6 +33,12 @@ const Container = styled.div`
   padding: 36px 15%;
   width: 100%;
   z-index: 1;
+`
+
+const DealDescriptionItem = styled(JustifyStartColumn)`
+  padding-left: 9px;
+  border-left: 2px solid #33CC66;
+  height: max-content;
 `
 
 const DealsPanelWrapper = styled(JustifyCenterColumn)`
@@ -54,15 +59,11 @@ const CurrentDeal = styled(StartRow)`
 const DealImage = styled.img`
   width: 50px;
   height: 50px;
+  border-radius: 16px;
 `
 
 const DealDescription = styled(StartRow)`
-  padding: 27px 20px;
-  border-right: 1px solid rgba(24, 24, 51, .1);
-`
-
-const DealStatus = styled(JustifyStartColumn)`
-  padding: 27px 20px;
+  padding: 27px 30px;
 `
 
 const AllDeals = (props: DealsPropType) => {
@@ -116,6 +117,7 @@ const AllDeals = (props: DealsPropType) => {
           firstSelectedIndex={activeButton}
           onChange={setActiveButton}
         />
+        <div className={'mb-10'} />
         <StartRow>
           <>
             {allActiveDeals && activeButton === 0 && allActiveDeals.filter((deal: any) => deal.stage !== 'closed').map(deal =>
@@ -125,16 +127,21 @@ const AllDeals = (props: DealsPropType) => {
                 onClick={() => history.push(`${RouteName.ALL_DEALS}/${deal.transactionId}`)}
               >
                 <DealDescription gap={9}>
-                  <DealImage src={`${API_URL}/investmentStatic/${deal.investment.logo}'`}/>
+                  <DealImage src={`${API_URL}/dist/investmentsStatic/${deal.investment.logoPath}`.replaceAll(' ', '%20')}/>
                   <JustifyStartColumn>
                     <Text fontWeight={600} fontSize={16}>{deal.investment.name}</Text>
-                    <ReactMarkdown children={deal.investment.subtitle} rehypePlugins={[rehypeRaw]} />
+                    <ReactMarkdown children={deal.investment.aboutSubtitle} rehypePlugins={[rehypeRaw]} />
                   </JustifyStartColumn>
+                  <div className={'mr-6'} />
+                  <DealDescriptionItem>
+                    <Text fontWeight={500} fontSize={14}>Status</Text>
+                    <Text fontWeight={600} fontSize={16}>{StageToTitleMapping[`${deal.stage}`]}</Text>
+                  </DealDescriptionItem>
+                  <DealDescriptionItem>
+                    <Text fontWeight={500} fontSize={14}>Invested</Text>
+                    <Text fontWeight={600} fontSize={16}>${deal.desiredInvestmentAmount}</Text>
+                  </DealDescriptionItem>
                 </DealDescription>
-                <DealStatus>
-                  <Text fontWeight={500} fontSize={20}>Status</Text>
-                  <Text fontWeight={400} fontSize={14}>Closed</Text>
-                </DealStatus>
               </CurrentDeal>
             )}
           </>
@@ -146,16 +153,21 @@ const AllDeals = (props: DealsPropType) => {
                 onClick={() => history.push(`${RouteName.ALL_DEALS}/${deal.transactionId}`)}
               >
                 <DealDescription gap={9}>
-                  <DealImage src={mockImage}/>
+                  <DealImage src={`${API_URL}/dist/investmentsStatic/${deal.investment.logoPath}`.replaceAll(' ', '%20')}/>
                   <JustifyStartColumn>
                     <Text fontWeight={600} fontSize={16}>{deal.investment.name}</Text>
-                    <ReactMarkdown children={deal.investment.subtitle} rehypePlugins={[rehypeRaw]} />
+                    <ReactMarkdown children={deal.investment.aboutSubtitle} rehypePlugins={[rehypeRaw]} />
                   </JustifyStartColumn>
+                  <div className={'mr-6'} />
+                  <DealDescriptionItem>
+                    <Text fontWeight={500} fontSize={14}>Status</Text>
+                    <Text fontWeight={600} fontSize={16}>{StageToTitleMapping[`${deal.stage}`]}</Text>
+                  </DealDescriptionItem>
+                  <DealDescriptionItem>
+                    <Text fontWeight={500} fontSize={14}>Invested</Text>
+                    <Text fontWeight={600} fontSize={16}>${deal.desiredInvestmentAmount}</Text>
+                  </DealDescriptionItem>
                 </DealDescription>
-                <DealStatus>
-                  <Text fontWeight={500} fontSize={20}>Status</Text>
-                  <Text fontWeight={400} fontSize={14}>Closed</Text>
-                </DealStatus>
               </CurrentDeal>
             )}
           </>
