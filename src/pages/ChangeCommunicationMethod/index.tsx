@@ -53,9 +53,9 @@ const ChangeCommunicationMethodModal = () => {
   const history = useHistory()
 
   const methods = [
-    {type: 'TELEGRAM', value: 'Telegram'},
-    {type: 'EMAIL', value: 'Email'},
-    {type: 'WHATSUP', value: 'Whatsup'}
+    {type: 'TELEGRAM', value: 'telegram'},
+    {type: 'EMAIL', value: 'email'},
+    {type: 'WHATSAPP', value: 'whatsapp'}
   ]
 
   const [[communicationMethods, setCommunicationMethods], communicationMethodsValid] = useValidatedState<string>("", validationFuncsFactory.inArray<string>(methods.map(method => method.value)));
@@ -66,7 +66,7 @@ const ChangeCommunicationMethodModal = () => {
   const {fetchData, isServerError, isLoading, serverErrorMessage, isWaitingForCode} = useUserDataUpdate(
     {
       login: email,
-      type: communicationMethods.toUpperCase(),
+      type: communicationMethods,
       contact: personalContact
     },
     `${API_URL}/api/contacts/update`
