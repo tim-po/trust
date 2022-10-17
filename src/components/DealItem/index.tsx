@@ -14,6 +14,8 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import {API_URL} from "../../api/constants";
 import {useCookies} from "react-cookie";
+import {useHistory} from "react-router-dom";
+import {RouteName} from "../../router";
 
 type DealItemPropType = {
   offer: IOffer
@@ -98,6 +100,8 @@ const DealItem = (props: DealItemPropType) => {
   const {locale} = useContext(LocaleContext)
   const {offer} = props
 
+  const history = useHistory()
+
   const [cookies] = useCookies(['auth'])
 
   const [showFullDescription, setShowFullDescription] = useState(false)
@@ -122,7 +126,11 @@ const DealItem = (props: DealItemPropType) => {
 
     fetch(createDealUrl, requestOptions)
       .then(res => res.json())
-      .then(json => console.log(json))
+      .then(json => {
+        if (json.statusCode === 200) {
+          history.push(`${RouteName.ALL_DEALS}/${json.data.transaction.transactionId}`)
+        }
+      })
   }
 
   return (

@@ -15,7 +15,9 @@ import {IDealStepStatus, IDealActions, StepStatusEnum, ActionStatusEnum} from "t
 
 type PaymentStatusProps = {
   status: IDealStepStatus,
-  action: IDealActions
+  action: IDealActions,
+  nextStep: (body: { desiredInvestmentAmount?: number }) => void,
+  adminErrorMessage?: string
 }
 
 const ButtonWrapper = styled.div`
@@ -34,10 +36,9 @@ const NoContactsLink = styled.div`
 `
 
 const PaymentStatus = (props: PaymentStatusProps) => {
-  const {status, action} = props
+  const {status, action, nextStep, adminErrorMessage} = props
 
   const [[amount, setAmount], amountValid] = useValidatedState<string>("", validationFuncs.hasValue);
-  const [[contact, setContact], contactValid] = useValidatedState<string>("", validationFuncs.hasValue);
 
   const {fetchUserAccountInfo, communicationMethod} = useUserAccountInfo(`${API_URL}/api/users/contacts`)
 
@@ -54,11 +55,13 @@ const PaymentStatus = (props: PaymentStatusProps) => {
         <div className={'mb-2'}/>
         {status === StepStatusEnum.ACTIVE &&
           <>
-            {action === ActionStatusEnum.USER_ACTION &&
+            {(action === ActionStatusEnum.USER_ACTION || action === ActionStatusEnum.USER_ACTION_UNSUCCESSFUL) &&
               <>
                 <Text fontWeight={400} fontSize={14}>To get started, enter the desired purchase amount and select a
                   communication method. After sending the data, the manager will contact you to confirm the information.
                 </Text>
+                <div className={'mb-2'}/>
+                {adminErrorMessage && <Text fontWeight={400} fontSize={14} color={'#e73d3d'}><strong>Message from manager:</strong> {adminErrorMessage}</Text>}
                 <div className={'mb-2'}/>
                 <AlignCenterRow>
                   <SimpleLabelContainer label={'Amount in $'}>
@@ -77,7 +80,7 @@ const PaymentStatus = (props: PaymentStatusProps) => {
                   </SimpleLabelContainer>
                 </AlignCenterRow>
                 <ButtonWrapper>
-                  <TrustButton style='green' isValid={amountValid}>Send data</TrustButton>
+                  <TrustButton style='green' isValid={amountValid} onClick={() => nextStep({desiredInvestmentAmount: +amount})}>Send data</TrustButton>
                 </ButtonWrapper>
                 {communicationMethod ?
                   <Text fontWeight={400} fontSize={14}>Your contacts: {communicationMethod.contact}</Text>
@@ -90,9 +93,6 @@ const PaymentStatus = (props: PaymentStatusProps) => {
             }
             {action === ActionStatusEnum.ADMIN_ACTION &&
               <Text fontWeight={400} fontSize={14}>You have successfully submitted your application.<br /> Wait for a response from the manager.</Text>
-            }
-            {action === ActionStatusEnum.USER_ACTION_UNSUCCESSFUL &&
-              <></>
             }
           </>
         }

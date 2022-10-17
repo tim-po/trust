@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import texts from './localization'
 import LocaleContext from "Standard/LocaleContext";
 import {localized} from "Standard/utils/localized";
@@ -8,8 +8,13 @@ import ManageBackground from "icons/ManageBackground";
 import {Row, JustifyStartColumn, StartRow} from "Standard/styles/GlobalStyledComponents";
 import Text from 'Standard/components/Text';
 import DealControlling from "components/DealControlling";
-import ReturnPanel from "../../components/ReturnPanel";
-import {RouteName} from "../../router";
+import ReturnPanel from "components/ReturnPanel";
+import {RouteName} from "router";
+import {API_URL} from "api/constants";
+import {useParams} from "react-router";
+import {useCookies} from "react-cookie";
+import {IDeal} from "types/ManageStatus";
+import {useCurrentDeal} from "hooks/useCurrentDeal";
 
 type ManagePropType = {}
 
@@ -59,6 +64,13 @@ const Timer = styled(StartRow)`
 
 const Manage = (props: ManagePropType) => {
   const {locale} = useContext(LocaleContext)
+  const params:{ id: string } = useParams()
+
+  const {fetchCurrentDeal, currentDeal, nextStep} = useCurrentDeal(params.id)
+
+  useEffect(() => {
+    fetchCurrentDeal()
+  }, [])
 
   return (
     <Container>
@@ -87,7 +99,7 @@ const Manage = (props: ManagePropType) => {
               </JustifyStartColumn>
             </Timer>
           </JustifyStartColumn>
-          <DealControlling />
+          <DealControlling currentDeal={currentDeal} nextStep={nextStep}/>
         </Row>
       </ManagePanelWrapper>
     </Container>
