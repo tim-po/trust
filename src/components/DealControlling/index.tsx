@@ -96,7 +96,7 @@ const DealControlling = (props: DealControllingPropType) => {
       {currentDeal && currentDeal.stage === StepsStages.CLOSED ?
         <JustifyStartColumn>
           <Text fontWeight={500} fontSize={20}>Deal confirmed!</Text>
-          <Text fontWeight={400} fontSize={16}>Invested: ${currentDeal?.desiredInvestmentAmount}</Text>
+          <Text fontWeight={400} fontSize={16}>Invested: ${currentDeal?.fundsDeposited}</Text>
         </JustifyStartColumn>
         :
         <Stepper>

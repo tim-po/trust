@@ -71,7 +71,7 @@ const Manage = (props: ManagePropType) => {
   useEffect(() => {
     fetchCurrentDeal()
   }, [])
-
+  console.log(currentDeal)
   return (
     <Container>
       <SubHeader
@@ -84,20 +84,17 @@ const Manage = (props: ManagePropType) => {
         <Row gap={16}>
           <JustifyStartColumn>
             <CurrentDeal gap={9}>
-              <DealImage src={mockImage} />
+              <DealImage src={`${API_URL}/dist/investmentsStatic/${currentDeal?.investment.logoPath}`.replaceAll(' ', '%20')} />
               <JustifyStartColumn>
-                <Text fontWeight={600} fontSize={16}>Metamask</Text>
-                <Text fontWeight={500} fontSize={14}>Cryptocurrency wallet</Text>
+                <Text fontWeight={600} fontSize={16}>{currentDeal?.investment.name}</Text>
+                <Text fontWeight={500} fontSize={14}>{currentDeal?.investment.aboutSubtitle}</Text>
               </JustifyStartColumn>
             </CurrentDeal>
-            <Timer gap={9}>
-              <Text fontWeight={600} fontSize={48} color={'#33CC66'}>2</Text>
-              <JustifyStartColumn>
-                <Text fontWeight={600} fontSize={16}>Days Remaining</Text>
-                <Text fontWeight={600} fontSize={22}>03:09:50</Text>
-                <Text fontWeight={500} fontSize={16} color={'rgba(24, 24, 51, .3)'}>Next close: 31/12/22</Text>
-              </JustifyStartColumn>
-            </Timer>
+            {currentDeal && currentDeal.nextClose && currentDeal.stage !== 'closed' &&
+              <Timer gap={9}>
+                <Text fontWeight={400} fontSize={16}>You must pay by {currentDeal.nextClose}</Text>
+              </Timer>
+            }
           </JustifyStartColumn>
           <DealControlling currentDeal={currentDeal} nextStep={nextStep}/>
         </Row>

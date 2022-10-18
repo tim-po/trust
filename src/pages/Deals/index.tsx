@@ -10,7 +10,6 @@ import {
   JustifyStartColumn,
   StartRow,
   JustifyCenterColumn,
-  Row,
 } from "../../Standard/styles/GlobalStyledComponents";
 import Text from "../../Standard/components/Text";
 import {useHistory} from "react-router-dom";
@@ -78,6 +77,7 @@ const AllDeals = (props: DealsPropType) => {
 
   const [cookies] = useCookies(['auth'])
   const history = useHistory()
+
   const getAllDeals = async () => {
     const allDealsUrl = `${API_URL}/api/transaction`
 

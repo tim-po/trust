@@ -45,7 +45,10 @@ const Invest = (props: InvestPropType) => {
 
     fetch(offersUrl, requestOptions)
       .then(res => res.json())
-      .then(json => setOffers(json))
+      .then(json => {
+        console.log(json)
+        setOffers(json.investments)
+      })
   }
 
   useEffect(() => {

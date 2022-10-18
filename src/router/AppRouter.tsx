@@ -25,7 +25,7 @@ const AppRouter = () => {
                  key={route.path}
           />
         )}
-        <Redirect to={RouteName.NOT_FOUND}/>
+        <Redirect to={RouteName.INVEST}/>
       </Switch>
       :
       <Switch>
