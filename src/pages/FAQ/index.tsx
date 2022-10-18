@@ -84,10 +84,13 @@ const FAQ = (props: FAQPropType) => {
             </Wrapper>
           </RowCentered>
           <RowCentered>
-            {allQuestions.length && allQuestions.map(question =>
+            {allQuestions.length ?
+              allQuestions.map(question =>
               <div key={question.id}>
                 <FAQTile title={question.title} body={question.body}/>
               </div>)
+              :
+              ''
             }
           </RowCentered>
         </JustifyStartColumn>

@@ -85,7 +85,7 @@ const Documents = (props: DocumentsPropType) => {
     (documentsStatus.mainDocument?.token !== '' || mainToken !== '')
     &&
     (documentsStatus.additionalDocument?.token !== '' || additionalToken !== '')
-
+  
   async function getUserToken(body: FormData) {
     const userTokenUrl = `${API_URL}/api/images/upload`;
 

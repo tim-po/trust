@@ -47,7 +47,7 @@ const Invest = (props: InvestPropType) => {
       .then(res => res.json())
       .then(json => {
         console.log(json)
-        setOffers(json.investments)
+        setOffers(json.data.investments)
       })
   }
 
