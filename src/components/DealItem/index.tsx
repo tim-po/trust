@@ -14,6 +14,8 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import {API_URL} from "../../api/constants";
 import {useCookies} from "react-cookie";
+import {useHistory} from "react-router-dom";
+import {RouteName} from "../../router";
 
 type DealItemPropType = {
   offer: IOffer
@@ -23,7 +25,7 @@ const DealItemDefaultProps = {}
 
 const DealWrapper = styled(Column)`
   background: #fff;
-  width: 860px;
+  width: 1000px;
   box-shadow: 0 0 27px rgba(94, 103, 120, 0.1);
   border-radius: 16px;
   margin-bottom: 32px;
@@ -37,12 +39,14 @@ const DealHeader = styled(SpaceBetweenRow)`
 const DealImage = styled.img`
   width: 50px;
   height: 50px;
+  border-radius: 16px;
 `
 
 const DealDescriptionItem = styled(JustifyStartColumn)`
   padding-left: 9px;
   border-left: 2px solid #33CC66;
   height: max-content;
+  width: 140px;
 `
 
 const ButtonWrapper = styled.div`
@@ -94,9 +98,15 @@ const PresentationLink = styled.a`
   }
 `
 
+const TextWrapper = styled.div`
+  width: 180px
+`
+
 const DealItem = (props: DealItemPropType) => {
   const {locale} = useContext(LocaleContext)
   const {offer} = props
+
+  const history = useHistory()
 
   const [cookies] = useCookies(['auth'])
 
@@ -122,18 +132,24 @@ const DealItem = (props: DealItemPropType) => {
 
     fetch(createDealUrl, requestOptions)
       .then(res => res.json())
-      .then(json => console.log(json))
+      .then(json => {
+        if (json.statusCode === 200) {
+          history.push(`${RouteName.ALL_DEALS}/${json.data.transaction.transactionId}`)
+        }
+      })
   }
 
   return (
     <DealWrapper>
       <DealHeader>
         <Row gap={9}>
-          <DealImage src={`http://localhost:7002/investmentsStatic/${offer.logoPath}`}/>
-          <JustifyStartColumn>
-            <Text fontWeight={600} fontSize={16}>{offer.name}</Text>
-            <Text fontWeight={500} fontSize={14}>{offer.aboutSubtitle}</Text>
-          </JustifyStartColumn>
+          <DealImage src={`${API_URL}/dist/investmentsStatic/${offer.logoPath}`.replaceAll(' ', '%20')}/>
+          <TextWrapper>
+            <JustifyStartColumn>
+              <Text fontWeight={600} fontSize={16}>{offer.name}</Text>
+              <Text fontWeight={500} fontSize={14}>{offer.aboutSubtitle}</Text>
+            </JustifyStartColumn>
+          </TextWrapper>
         </Row>
         <Row gap={32}>
           {offer.headerLabelFirst && offer.headerTextFirst &&
@@ -175,7 +191,7 @@ const DealItem = (props: DealItemPropType) => {
         </CompanyPartners>
         <CompanyPresentation gap={10}>
           <DownloadIcon/>
-          <PresentationLink href={`http://134.209.181.150:7002/investmentsStatic/${offer.presentationPath}`} target="_blank">{offer.presentationLabel}</PresentationLink>
+          <PresentationLink href={`${API_URL}/dist/investmentsStatic/${offer.presentationPath}`.replaceAll(' ', '%20')} target="_blank">{offer.presentationLabel}</PresentationLink>
         </CompanyPresentation>
       </CompanyDescriptionWrapper>
       <LearnMore onClick={toggleLearnMoreButton}>

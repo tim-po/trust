@@ -137,7 +137,7 @@ const PaymentMethod = (props: PaymentMethodPropType) => {
     if (!walletValid) return
 
     setIsLoading(true)
-    const setNewWalletUrl = `${API_URL}/api/wallets/add`
+    const setNewWalletUrl = `${API_URL}/api/wallets/update`
 
     const requestOptions = {
       method: 'POST',

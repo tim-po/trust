@@ -11,7 +11,6 @@ type SignDocumentsProps = {
 
 const DealConfirmation = (props: SignDocumentsProps) => {
   const {status, action} = props
-
   return (
     <StepItem status={status} isLastStep>
       <JustifyStartColumn>

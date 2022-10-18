@@ -8,9 +8,23 @@ import SignDocuments from "../ManageStatuses/SignDocuments";
 import ConfirmKYC from "../ManageStatuses/ConfirmKYC";
 import DepositFunds from "../ManageStatuses/DepositFunds";
 import DealConfirmation from "../ManageStatuses/DealConfirmation";
-import {IDealStepStatus, StepsStages, Step, IDealActions, StepStatusEnum, ActionStatusEnum} from "types/ManageStatus";
+import {JustifyStartColumn} from "Standard/styles/GlobalStyledComponents";
+import {
+  IDealStepStatus,
+  StepsStages,
+  Step,
+  IDealActions,
+  StepStatusEnum,
+  ActionStatusEnum,
+  IDeal
+} from "types/ManageStatus";
+import Text from "Standard/components/Text";
 
-type DealControllingPropType = {}
+
+type DealControllingPropType = {
+  currentDeal: IDeal | undefined,
+  nextStep: (body: { desiredInvestmentAmount?: number }) => void
+}
 
 const DealControllingDefaultProps = {}
 
@@ -25,48 +39,81 @@ const DealControllingWrapper = styled.div`
 
 const DealControlling = (props: DealControllingPropType) => {
   const {locale} = useContext(LocaleContext)
-
-  const [currentDealStep, setCurrentDealStep] = useState(undefined)
+  const {currentDeal, nextStep} = props
 
   const StepsArray: Step[] = [
     {
       stage: StepsStages.INITIAL,
-      component: (status: IDealStepStatus, action: IDealActions) => <PaymentStatus status={status} action={action}/>
-    },
-    {
-      stage: StepsStages.DOCUMENTS,
-      component: (status: IDealStepStatus, action: IDealActions) => <SignDocuments status={status} action={action}/>
+      component: (status: IDealStepStatus, action: IDealActions, adminErrorMessage?: string) =>
+        <PaymentStatus
+          adminErrorMessage={adminErrorMessage}
+          nextStep={nextStep}
+          status={status}
+          action={action}
+        />
     },
     {
       stage: StepsStages.KYC,
-      component: (status: IDealStepStatus, action: IDealActions) => <ConfirmKYC status={status} action={action}/>
+      component: (status: IDealStepStatus, action: IDealActions) =>
+        <ConfirmKYC
+          nextStep={nextStep}
+          status={status}
+          action={action}
+        />
+    },
+    {
+      stage: StepsStages.DOCUMENTS,
+      component: (status: IDealStepStatus, action: IDealActions, adminErrorMessage?: string) =>
+        <SignDocuments
+          adminErrorMessage={adminErrorMessage}
+          nextStep={nextStep}
+          status={status}
+          action={action}
+        />
     },
     {
       stage: StepsStages.DEPOSIT,
-      component: (status: IDealStepStatus, action: IDealActions) => <DepositFunds status={status} action={action}/>
+      component: (status: IDealStepStatus, action: IDealActions, adminErrorMessage?: string) =>
+        <DepositFunds
+          adminErrorMessage={adminErrorMessage}
+          nextStep={nextStep}
+          status={status}
+          action={action}
+        />
     },
     {
-      stage: StepsStages.CONFIRMED,
-      component: (status: IDealStepStatus, action: IDealActions) => <DealConfirmation status={status} action={action}/>,
+      stage: StepsStages.CLOSED,
+      component: (status: IDealStepStatus, action: IDealActions) =>
+        <DealConfirmation
+          status={status}
+          action={action}
+        />,
     },
   ]
 
   return (
     <DealControllingWrapper>
-      <Stepper>
-        {StepsArray.map((step, index) => {
-          const currentStatusIndex = StepsArray.findIndex(step => step.stage === 'initial')
-          let status: IDealStepStatus
-          if (index < currentStatusIndex) {
-            status = StepStatusEnum.READY
-          } else if (index > currentStatusIndex) {
-            status = StepStatusEnum.WAIT
-          } else {
-            status = StepStatusEnum.ACTIVE
-          }
-          return <>{step.component(StepStatusEnum.ACTIVE, ActionStatusEnum.ADMIN_ACTION)}</>
-        })}
-      </Stepper>
+      {currentDeal && currentDeal.stage === StepsStages.CLOSED ?
+        <JustifyStartColumn>
+          <Text fontWeight={500} fontSize={20}>Deal confirmed!</Text>
+          <Text fontWeight={400} fontSize={16}>Invested: ${currentDeal?.fundsDeposited}</Text>
+        </JustifyStartColumn>
+        :
+        <Stepper>
+          {currentDeal && StepsArray.map((step, index) => {
+            const currentStatusIndex = StepsArray.findIndex(step => step.stage === currentDeal.stage)
+            let status: IDealStepStatus
+            if (index < currentStatusIndex) {
+              status = StepStatusEnum.READY
+            } else if (index > currentStatusIndex) {
+              status = StepStatusEnum.WAIT
+            } else {
+              status = StepStatusEnum.ACTIVE
+            }
+            return <div key={step.stage}>{step.component(status, currentDeal.status, currentDeal?.adminErrorMessage)}</div>
+          })}
+        </Stepper>
+      }
     </DealControllingWrapper>
   )
 };

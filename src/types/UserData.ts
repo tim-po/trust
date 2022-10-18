@@ -48,7 +48,7 @@ export type UserData = {
   isSubmitted: boolean
   isVerified: boolean
   lastName: FieldStatus
-  mainStreet:FieldStatus
+  mainStreet: FieldStatus
   middleName: FieldStatus
   nationality: FieldStatus
   region: FieldStatus
