@@ -42,7 +42,7 @@ export type IDeal =  {
   desiredInvestmentAmount: number;
   investment: {aboutSubtitle: string, logoPath: string, name: string}
   documents: string;
-  fundsDeposited: null | boolean;
+  fundsDeposited: null | number;
   investmentId: string;
   isKycValid: boolean;
   managerId: string | number;

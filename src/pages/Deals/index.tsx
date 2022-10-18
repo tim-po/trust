@@ -39,6 +39,7 @@ const DealDescriptionItem = styled(JustifyStartColumn)`
   padding-left: 9px;
   border-left: 2px solid #33CC66;
   height: max-content;
+  width: 140px;
 `
 
 const DealsPanelWrapper = styled(JustifyCenterColumn)`
@@ -77,7 +78,6 @@ const AllDeals = (props: DealsPropType) => {
 
   const [cookies] = useCookies(['auth'])
   const history = useHistory()
-
   const getAllDeals = async () => {
     const allDealsUrl = `${API_URL}/api/transaction`
 
@@ -165,7 +165,7 @@ const AllDeals = (props: DealsPropType) => {
                   </DealDescriptionItem>
                   <DealDescriptionItem>
                     <Text fontWeight={500} fontSize={14}>Invested</Text>
-                    <Text fontWeight={600} fontSize={16}>${deal.desiredInvestmentAmount}</Text>
+                    <Text fontWeight={600} fontSize={16}>${deal.fundsDeposited}</Text>
                   </DealDescriptionItem>
                 </DealDescription>
               </CurrentDeal>

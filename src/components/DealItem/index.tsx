@@ -25,7 +25,7 @@ const DealItemDefaultProps = {}
 
 const DealWrapper = styled(Column)`
   background: #fff;
-  width: 860px;
+  width: 1000px;
   box-shadow: 0 0 27px rgba(94, 103, 120, 0.1);
   border-radius: 16px;
   margin-bottom: 32px;
@@ -46,6 +46,7 @@ const DealDescriptionItem = styled(JustifyStartColumn)`
   padding-left: 9px;
   border-left: 2px solid #33CC66;
   height: max-content;
+  width: 140px;
 `
 
 const ButtonWrapper = styled.div`
@@ -97,6 +98,10 @@ const PresentationLink = styled.a`
   }
 `
 
+const TextWrapper = styled.div`
+  width: 180px
+`
+
 const DealItem = (props: DealItemPropType) => {
   const {locale} = useContext(LocaleContext)
   const {offer} = props
@@ -139,10 +144,12 @@ const DealItem = (props: DealItemPropType) => {
       <DealHeader>
         <Row gap={9}>
           <DealImage src={`${API_URL}/dist/investmentsStatic/${offer.logoPath}`.replaceAll(' ', '%20')}/>
-          <JustifyStartColumn>
-            <Text fontWeight={600} fontSize={16}>{offer.name}</Text>
-            <Text fontWeight={500} fontSize={14}>{offer.aboutSubtitle}</Text>
-          </JustifyStartColumn>
+          <TextWrapper>
+            <JustifyStartColumn>
+              <Text fontWeight={600} fontSize={16}>{offer.name}</Text>
+              <Text fontWeight={500} fontSize={14}>{offer.aboutSubtitle}</Text>
+            </JustifyStartColumn>
+          </TextWrapper>
         </Row>
         <Row gap={32}>
           {offer.headerLabelFirst && offer.headerTextFirst &&
