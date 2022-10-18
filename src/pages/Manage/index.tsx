@@ -84,10 +84,10 @@ const Manage = (props: ManagePropType) => {
         <Row gap={16}>
           <JustifyStartColumn>
             <CurrentDeal gap={9}>
-              <DealImage src={`${API_URL}/dist/investmentsStatic/${currentDeal?.investment.logoPath}`.replaceAll(' ', '%20')} />
+              <DealImage src={`${API_URL}/dist/investmentsStatic/${currentDeal?.investment?.logoPath}`.replaceAll(' ', '%20')} />
               <JustifyStartColumn>
-                <Text fontWeight={600} fontSize={16}>{currentDeal?.investment.name}</Text>
-                <Text fontWeight={500} fontSize={14}>{currentDeal?.investment.aboutSubtitle}</Text>
+                <Text fontWeight={600} fontSize={16}>{currentDeal?.investment?.name}</Text>
+                <Text fontWeight={500} fontSize={14}>{currentDeal?.investment?.aboutSubtitle}</Text>
               </JustifyStartColumn>
             </CurrentDeal>
             {currentDeal && currentDeal.nextClose && currentDeal.stage !== 'closed' &&

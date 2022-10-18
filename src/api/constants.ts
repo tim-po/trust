@@ -1,1 +1,1 @@
-export const API_URL = 'http://134.209.181.150:7002';
+export const API_URL = 'https://back2.kyc.marketmaking.pro';

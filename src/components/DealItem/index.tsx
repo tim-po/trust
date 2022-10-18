@@ -143,7 +143,7 @@ const DealItem = (props: DealItemPropType) => {
     <DealWrapper>
       <DealHeader>
         <Row gap={9}>
-          <DealImage src={`${API_URL}/dist/investmentsStatic/${offer.logoPath}`.replaceAll(' ', '%20')}/>
+          <DealImage src={`${API_URL}/dist/investmentsStatic/${offer?.logoPath}`.replaceAll(' ', '%20')}/>
           <TextWrapper>
             <JustifyStartColumn>
               <Text fontWeight={600} fontSize={16}>{offer.name}</Text>
@@ -191,7 +191,7 @@ const DealItem = (props: DealItemPropType) => {
         </CompanyPartners>
         <CompanyPresentation gap={10}>
           <DownloadIcon/>
-          <PresentationLink href={`${API_URL}/dist/investmentsStatic/${offer.presentationPath}`.replaceAll(' ', '%20')} target="_blank">{offer.presentationLabel}</PresentationLink>
+          <PresentationLink href={`${API_URL}/dist/investmentsStatic/${offer?.presentationPath}`.replaceAll(' ', '%20')} target="_blank">{offer.presentationLabel}</PresentationLink>
         </CompanyPresentation>
       </CompanyDescriptionWrapper>
       <LearnMore onClick={toggleLearnMoreButton}>
